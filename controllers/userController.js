@@ -128,13 +128,13 @@ const forgotPassword = async (req, res) => {
       port: 587, // Port for TLS
       secure: false, // Set to true for SSL
       auth: {
-        user: "dbbrotman@yahoo.com", // Your Yahoo email address
-        pass: "vegefqclhaqkqehu", // Your Yahoo App Password
+        user: process.env.EMAIL_USER, // Your Yahoo email address
+        pass: process.env.EMAIL_PASS, // Your Yahoo App Password
       },
     });
 
     const mailOptions = {
-      from: process.env.EMAIL_User,
+      from: process.env.EMAIL_USER,
       to: user.email,
       subject: "Password Reset",
       text: `Please click on the following link to reset your password: ${resetLink}`,
