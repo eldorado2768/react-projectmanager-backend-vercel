@@ -4,6 +4,7 @@ const jwt = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
 const crypto = require("crypto");
 
+/*Registers a new user*/
 const registerUser = async (req, res) => {
   try {
     const { username, password, permissionId, firstName, lastName, email } =
@@ -38,6 +39,7 @@ const registerUser = async (req, res) => {
   }
 };
 
+/*Login an existing user*/
 const loginUser = async (req, res) => {
   try {
     const receivedUsername = req.body.username.trim();
@@ -82,8 +84,9 @@ const loginUser = async (req, res) => {
   }
 };
 
+/*User forgets password*/
 const forgotPassword = async (req, res) => {
-  console.log("forgotPassword function called"); // Add this line
+  console.log("forgotPassword function called");
   try {
     const { emailOrUsername } = req.body;
 
@@ -106,9 +109,7 @@ const forgotPassword = async (req, res) => {
     await user.save();
 
     // Send password reset email
-    /*const resetLink = `http://localhost:5173/reset-password/${resetToken}`; */
-    const resetLink =
-      "react-projectmanager-git-master-david-brotmans-projects.vercel.app/${resetToken}";
+    const resetLink = `https://react-projectmanager-git-master-david-brotmans-projects.vercel.app/reset-password/${resetToken}`;
 
     const transporter = nodemailer.createTransport({
       service: "yahoo", // Or your email service
@@ -122,19 +123,24 @@ const forgotPassword = async (req, res) => {
     });
 
     const mailOptions = {
-      from: process.env.EMAIL_USER,
+      from: process.env.EMAIL_User,
       to: user.email,
       subject: "Password Reset",
       text: `Please click on the following link to reset your password: ${resetLink}`,
     };
 
-    await transporter.sendMail(mailOptions);
-    console.log("Email sent:", mailOptions.to); // Add this line
-
-    res.status(200).json({ message: "Password reset email sent" });
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.error("Error sending email:", error);
+        return res.status(500).json({ message: "Failed to send reset email." });
+      } else {
+        console.log("Email sent:", info.response);
+        return res.json({ message: "Reset email sent successfully." });
+      }
+    });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Internal server error" });
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -143,6 +149,7 @@ const isValidPassword = (password) => {
   return passwordRegex.test(password) && password.length >= 8;
 };
 
+/*User resets password*/
 const resetPassword = async (req, res) => {
   try {
     const { token, password } = req.body;
