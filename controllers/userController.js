@@ -90,35 +90,36 @@ const forgotPassword = async (req, res) => {
   try {
     const { emailOrUsername } = req.body;
 
-    // Find the user by email or username
     const user = await User.findOne({
       $or: [{ email: emailOrUsername }, { username: emailOrUsername }],
     });
 
     if (!user) {
+      res.setHeader(
+        "Access-Control-Allow-Origin",
+        "https://react-projectmanager-git-master-david-brotmans-projects.vercel.app"
+      );
+      res.setHeader("Content-Type", "application/json");
       return res.status(404).json({ message: "User not found" });
     }
 
-    // Generate password reset token
     const resetToken = crypto.randomBytes(20).toString("hex");
-    const resetExpires = Date.now() + 10 * 60 * 1000; // 10 minutes
+    const resetExpires = Date.now() + 10 * 60 * 1000;
 
-    // Update user in the database
     user.resetPasswordToken = resetToken;
     user.resetPasswordExpires = resetExpires;
     await user.save();
 
-    // Send password reset email
     const resetLink = `https://react-projectmanager-git-master-david-brotmans-projects.vercel.app/reset-password/${resetToken}`;
 
     const transporter = nodemailer.createTransport({
-      service: "yahoo", // Or your email service
+      service: "yahoo",
       auth: {
-        user: process.env.EMAIL_User, // Your email
-        pass: process.env.EMAIL_PASS, // Your password or app password
+        user: process.env.EMAIL_User,
+        pass: process.env.EMAIL_PASS,
       },
       tls: {
-        rejectUnauthorized: false, // Disable certificate verification
+        rejectUnauthorized: false,
       },
     });
 
@@ -132,18 +133,34 @@ const forgotPassword = async (req, res) => {
     transporter.sendMail(mailOptions, (error, info) => {
       if (error) {
         console.error("Error sending email:", error);
+        res.setHeader(
+          "Access-Control-Allow-Origin",
+          "https://react-projectmanager-git-master-david-brotmans-projects.vercel.app"
+        );
+        res.setHeader("Content-Type", "application/json");
         return res.status(500).json({ message: "Failed to send reset email." });
       } else {
         console.log("Email sent:", info.response);
+        res.setHeader(
+          "Access-Control-Allow-Origin",
+          "https://react-projectmanager-git-master-david-brotmans-projects.vercel.app"
+        );
+        res.setHeader("Content-Type", "application/json");
         return res.json({ message: "Reset email sent successfully." });
       }
     });
   } catch (error) {
     console.error(error);
+    res.setHeader(
+      "Access-Control-Allow-Origin",
+      "https://react-projectmanager-git-master-david-brotmans-projects.vercel.app"
+    );
+    res.setHeader("Content-Type", "application/json");
     return res.status(500).json({ message: "Internal server error" });
   }
 };
 
+/*is password valid*/
 const isValidPassword = (password) => {
   const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#$%^&*])/;
   return passwordRegex.test(password) && password.length >= 8;
