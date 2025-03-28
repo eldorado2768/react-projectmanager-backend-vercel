@@ -9,7 +9,16 @@ const cors = require("cors"); // Add this line
 dotenv.config();
 
 const app = express();
-app.use(cors()); // Add this line
+/*app.use(cors());*/
+app.use(
+  cors({
+    origin: [
+      "https://react-projectmanager-git-master-david-brotmans-projects.vercel.app",
+      "https://react-projectmanager-piw6kj6n1-david-brotmans-projects.vercel.app",
+    ],
+  })
+);
+
 const PORT = process.env.PORT || 5000;
 
 // Middleware to parse JSON requests (only once)
