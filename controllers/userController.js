@@ -40,17 +40,31 @@ const registerUser = async (req, res) => {
 
 const loginUser = async (req, res) => {
   try {
-    const { username, password } = req.body;
+    const receivedUsername = req.body.username.trim();
+    const receivedPassword = req.body.password.trim();
 
-    // Find the user by username
-    const user = await User.findOne({ username });
+    console.log("Received Username:", receivedUsername);
+    console.log("Received Password:", receivedPassword);
+
+    const user = await User.findOne({ username: receivedUsername });
+
     if (!user) {
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
-    // Compare passwords
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) {
+    const databaseUsername = user.username.trim();
+    const databasePassword = user.password.trim();
+
+    console.log("Database Username:", databaseUsername);
+    console.log("Database Hashed Password:", databasePassword);
+
+    const passwordMatch = bcrypt.compareSync(
+      receivedPassword,
+      databasePassword
+    );
+    console.log("Password Match:", passwordMatch);
+
+    if (!passwordMatch) {
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
