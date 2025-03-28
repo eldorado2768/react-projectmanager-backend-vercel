@@ -106,7 +106,10 @@ const forgotPassword = async (req, res) => {
     await user.save();
 
     // Send password reset email
-    const resetLink = `http://localhost:5173/reset-password/${resetToken}`; // Replace with your frontend domain
+    /*const resetLink = `http://localhost:5173/reset-password/${resetToken}`; */
+    const resetLink =
+      "react-projectmanager-git-master-david-brotmans-projects.vercel.app/${resetToken}";
+
     const transporter = nodemailer.createTransport({
       service: "yahoo", // Or your email service
       auth: {
