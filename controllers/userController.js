@@ -129,7 +129,7 @@ const forgotPassword = async (req, res) => {
       secure: false, // Set to true for SSL
       auth: {
         user: "dbbrotman@yahoo.com", // Your Yahoo email address
-        pass: '"vegefqclhaqkqehu"', // Your Yahoo App Password
+        pass: "vegefqclhaqkqehu", // Your Yahoo App Password
       },
     });
 
