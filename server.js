@@ -39,3 +39,12 @@ app.use("/api/users", userRoutes); // Corrected route mounting
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
+
+app.get("/test-cors", (req, res) => {
+  res.setHeader(
+    "Access-Control-Allow-Origin",
+    "https://react-projectmanager-git-master-david-brotmans-projects.vercel.app"
+  );
+  res.setHeader("Content-Type", "application/json");
+  res.json({ message: "CORS test successful" });
+});
