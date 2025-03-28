@@ -112,7 +112,7 @@ const forgotPassword = async (req, res) => {
 
     const resetLink = `https://react-projectmanager-git-master-david-brotmans-projects.vercel.app/reset-password/${resetToken}`;
 
-    const transporter = nodemailer.createTransport({
+    /*const transporter = nodemailer.createTransport({
       service: "yahoo",
       auth: {
         user: process.env.EMAIL_User,
@@ -120,6 +120,16 @@ const forgotPassword = async (req, res) => {
       },
       tls: {
         rejectUnauthorized: false,
+      },
+    });
+    */
+    const transporter = nodemailer.createTransport({
+      host: "smtp.mail.yahoo.com", // Yahoo's SMTP server
+      port: 587, // Port for TLS
+      secure: false, // Set to true for SSL
+      auth: {
+        user: "dbbrotman@yahoo.com", // Your Yahoo email address
+        pass: '"vegefqclhaqkqehu"', // Your Yahoo App Password
       },
     });
 
