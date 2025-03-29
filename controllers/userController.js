@@ -114,8 +114,8 @@ const forgotPassword = async (req, res) => {
 
     const transporter = nodemailer.createTransport({
       host: "smtp.mailersend.net", // MailSend SMTP serve
-      port: 587, // Port for TLS
-      secure: false, // Set to true for SSL
+      port: 465, // Port for unsecure
+      secure: true,
       auth: {
         user: process.env.MAILERSEND_USER, //MailSend apikey
         pass: process.env.MAILSERSEND_PASS, //Mailsend Secret API Key
