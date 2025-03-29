@@ -116,6 +116,8 @@ const forgotPassword = async (req, res) => {
     // Retrieve user.email before user.save()
     const userEmail = user.email;
     await user.save();
+    // Add return statement here
+    return;
 
     console.log("User object after save:", user); // Log the user object after save
 
@@ -190,15 +192,12 @@ const resetPassword = async (req, res) => {
       resetPasswordToken: {
         $regex: new RegExp(`^${token}$`, "i"),
       },
-      
     });
 
-   /*resetPasswordExpires: { $gt: Date.now() }, temporarily removed from const user*/
+    /*resetPasswordExpires: { $gt: Date.now() }, temporarily removed from const user*/
 
     console.log("User found:", user);
     console.log("Date.now():", Date.now());
-
-    
 
     if (!user) {
       return res.status(400).json({ message: "Invalid or expired token" });
