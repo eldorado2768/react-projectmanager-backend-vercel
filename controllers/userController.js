@@ -181,8 +181,15 @@ const resetPassword = async (req, res) => {
     console.log("Received token:", token);
 
     // Find the user by reset token and expiration
-    const user = await User.findOne({
+    /* const user = await User.findOne({
       resetPasswordToken: token,
+      resetPasswordExpires: { $gt: Date.now() },
+    });*/
+
+    const user = await User.findOne({
+      resetPasswordToken: {
+        $regex: new RegExp(`^<span class="math-inline">\{token\}</span>`, "i"),
+      },
       resetPasswordExpires: { $gt: Date.now() },
     });
 
