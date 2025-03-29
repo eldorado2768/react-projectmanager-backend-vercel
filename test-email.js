@@ -13,9 +13,10 @@ const transporter = nodemailer.createTransport({
 
 const mailOptions = {
   from: process.env.EMAIL_USER, // Your verified MailerSend email address
-  to: "david@123websitebiz.com", // Replace with a test email address
+  to: "davidbrotman2768@gmail.com", // Replace with a test email address
   subject: "Test Email from Render",
   text: "This is a test email sent from Render.com using nodemailer and MailerSend.",
+  html: "<h1>this is a test</h1>",
 };
 
 transporter.sendMail(mailOptions, (error, info) => {
