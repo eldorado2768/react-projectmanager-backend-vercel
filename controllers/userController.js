@@ -106,9 +106,15 @@ const forgotPassword = async (req, res) => {
     const resetToken = crypto.randomBytes(20).toString("hex");
     const resetExpires = Date.now() + 10 * 60 * 1000;
 
+    console.log("Generated token:", resetToken); // Log the token immediately after generation
+    console.log("Generated date:", resetExpires); // Log the token immediately after generation
+    console.log("User object before save:", user); // Log the user object before save
+
     user.resetPasswordToken = resetToken;
     user.resetPasswordExpires = resetExpires;
     await user.save();
+
+    console.log("User object after save:", user); // Log the user object after save
 
     const resetLink = `https://react-projectmanager-git-master-david-brotmans-projects.vercel.app/reset-password/${resetToken}`;
 
@@ -117,8 +123,8 @@ const forgotPassword = async (req, res) => {
       port: 587,
       secure: false,
       auth: {
-        user: process.env.MAILERSEND_USER, //MailSend apikey
-        pass: process.env.MAILERSEND_PASS, //Mailsend Secret API Key
+        user: process.env.MAILERSEND_USER, //Mailsend user
+        pass: process.env.MAILERSEND_PASS, //Mailsend password
       },
     });
 
