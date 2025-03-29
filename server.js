@@ -1,12 +1,9 @@
 const express = require("express");
 const cors = require("cors"); // Add this line
 const mongoose = require("mongoose");
-const dotenv = require("dotenv");
 const User = require("./models/User");
 const Permission = require("./models/Permission");
 const userRoutes = require("./routes/userRoutes"); // Corrected import
-
-dotenv.config();
 
 const app = express();
 /*app.use(cors());*/
