@@ -1,7 +1,7 @@
 const User = require("../models/User");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-//const nodemailer = require("nodemailer");
+const nodemailer = require("nodemailer");
 const crypto = require("crypto");
 
 /*Registers a new user*/
@@ -86,7 +86,7 @@ const loginUser = async (req, res) => {
 
 /*User forgets password*/
 const forgotPassword = async (req, res) => {
-console.log("forgotPassword function called");
+  console.log("forgotPassword function called");
   try {
     const { emailOrUsername } = req.body;
 
@@ -111,7 +111,7 @@ console.log("forgotPassword function called");
     await user.save();
 
     const resetLink = `https://react-projectmanager-git-master-david-brotmans-projects.vercel.app/reset-password/${resetToken}`;
-      
+
     const transporter = nodemailer.createTransport({
       host: "smtp.mailersend.net", // MailSend SMTP server
       port: 587,
