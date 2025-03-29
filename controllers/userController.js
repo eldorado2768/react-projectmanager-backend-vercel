@@ -113,7 +113,7 @@ const forgotPassword = async (req, res) => {
     const resetLink = `https://react-projectmanager-git-master-david-brotmans-projects.vercel.app/reset-password/${resetToken}`;
 
     const transporter = nodemailer.createTransport({
-      host: "smtp.mailersend.net, // MailSend SMTP server
+      host: "smtp.mailersend.net", // MailSend SMTP serve
       port: 587, // Port for TLS
       secure: false, // Set to true for SSL
       auth: {
@@ -148,7 +148,6 @@ const forgotPassword = async (req, res) => {
         return res.json({ message: "Reset email sent successfully." });
       }
     });
-
   } catch (error) {
     console.error(error);
     res.setHeader(
