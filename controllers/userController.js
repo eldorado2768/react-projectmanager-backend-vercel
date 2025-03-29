@@ -116,8 +116,6 @@ const forgotPassword = async (req, res) => {
     // Retrieve user.email before user.save()
     const userEmail = user.email;
     await user.save();
-    // Add return statement here
-    return;
 
     console.log("User object after save:", user); // Log the user object after save
 
