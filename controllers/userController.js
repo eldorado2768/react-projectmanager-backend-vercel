@@ -190,11 +190,15 @@ const resetPassword = async (req, res) => {
       resetPasswordToken: {
         $regex: new RegExp(`^${token}$`, "i"),
       },
-      resetPasswordExpires: { $gt: Date.now() },
+      
     });
+
+   /*resetPasswordExpires: { $gt: Date.now() }, temporarily removed from const user*/
 
     console.log("User found:", user);
     console.log("Date.now():", Date.now());
+
+    
 
     if (!user) {
       return res.status(400).json({ message: "Invalid or expired token" });
