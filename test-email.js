@@ -1,4 +1,5 @@
 const nodemailer = require("nodemailer");
+const http = require("http"); // Add this line to require the http module
 
 const transporter = nodemailer.createTransport({
   host: "smtp.mailersend.net",
