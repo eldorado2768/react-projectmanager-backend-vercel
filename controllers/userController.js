@@ -188,7 +188,7 @@ const resetPassword = async (req, res) => {
 
     const user = await User.findOne({
       resetPasswordToken: {
-        $regex: new RegExp(`^<span class="math-inline">\{token\}</span>`, "i"),
+        $regex: new RegExp(`^${token}$`, "i"),
       },
       resetPasswordExpires: { $gt: Date.now() },
     });
