@@ -103,62 +103,13 @@ const forgotPassword = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    const resetToken = crypto.randomBytes(20).toString("hex");
-    const resetExpires = Date.now() + 10 * 60 * 1000;
-
-    user.resetPasswordToken = resetToken;
-    user.resetPasswordExpires = resetExpires;
-    await user.save();
-
-    const resetLink = `https://react-projectmanager-git-master-david-brotmans-projects.vercel.app/reset-password/${resetToken}`;
-
-    /*const transporter = nodemailer.createTransport({
-      service: "yahoo",
-      auth: {
-        user: process.env.EMAIL_User,
-        pass: process.env.EMAIL_PASS,
-      },
-      tls: {
-        rejectUnauthorized: false,
-      },
-    });
-    */
-    const transporter = nodemailer.createTransport({
-      host: "smtp.mail.yahoo.com", // Yahoo's SMTP server
-      port: 587, // Port for TLS
-      secure: false, // Set to true for SSL
-      auth: {
-        user: process.env.EMAIL_USER, // Your Yahoo email address
-        pass: process.env.EMAIL_PASS, // Your Yahoo App Password
-      },
-    });
-
-    const mailOptions = {
-      from: process.env.EMAIL_USER,
-      to: user.email,
-      subject: "Password Reset",
-      text: `Please click on the following link to reset your password: ${resetLink}`,
-    };
-
-    transporter.sendMail(mailOptions, (error, info) => {
-      if (error) {
-        console.error("Error sending email:", error);
-        res.setHeader(
-          "Access-Control-Allow-Origin",
-          "https://react-projectmanager-git-master-david-brotmans-projects.vercel.app"
-        );
-        res.setHeader("Content-Type", "application/json");
-        return res.status(500).json({ message: "Failed to send reset email." });
-      } else {
-        console.log("Email sent:", info.response);
-        res.setHeader(
-          "Access-Control-Allow-Origin",
-          "https://react-projectmanager-git-master-david-brotmans-projects.vercel.app"
-        );
-        res.setHeader("Content-Type", "application/json");
-        return res.json({ message: "Reset email sent successfully." });
-      }
-    });
+    // Send a success response
+    res.setHeader(
+      "Access-Control-Allow-Origin",
+      "https://react-projectmanager-git-master-david-brotmans-projects.vercel.app"
+    );
+    res.setHeader("Content-Type", "application/json");
+    return res.json({ message: "Test response" });
   } catch (error) {
     console.error(error);
     res.setHeader(
