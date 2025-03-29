@@ -133,7 +133,7 @@ const forgotPassword = async (req, res) => {
 
     const mailOptions = {
       from: process.env.EMAIL_USER,
-      to: user.Email,
+      to: userEmail,
       subject: "Password Reset",
       text: `Please click on the following link to reset your password: ${resetLink}`,
     };
