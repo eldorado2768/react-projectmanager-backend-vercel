@@ -118,7 +118,7 @@ const forgotPassword = async (req, res) => {
       secure: false,
       auth: {
         user: process.env.MAILERSEND_USER, //MailSend apikey
-        pass: process.env.MAILSERSEND_PASS, //Mailsend Secret API Key
+        pass: process.env.MAILERSEND_PASS, //Mailsend Secret API Key
       },
     });
 
