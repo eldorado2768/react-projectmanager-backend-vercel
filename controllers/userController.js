@@ -112,6 +112,9 @@ const forgotPassword = async (req, res) => {
 
     user.resetPasswordToken = resetToken;
     user.resetPasswordExpires = resetExpires;
+
+    // Retrieve user.email before user.save()
+    const userEmail = user.email;
     await user.save();
 
     console.log("User object after save:", user); // Log the user object after save
@@ -130,7 +133,7 @@ const forgotPassword = async (req, res) => {
 
     const mailOptions = {
       from: process.env.EMAIL_USER,
-      to: user.email,
+      to: user.Email,
       subject: "Password Reset",
       text: `Please click on the following link to reset your password: ${resetLink}`,
     };
