@@ -7,8 +7,7 @@ const crypto = require("crypto");
 /*Registers a new user*/
 const registerUser = async (req, res) => {
   try {
-    const { username, password, permissionId, firstName, lastName, email } =
-      req.body;
+    const { username, password, roleId, firstName, lastName, email } = req.body;
 
     // Check if user already exists
     const existingUser = await User.findOne({ username });
@@ -19,11 +18,11 @@ const registerUser = async (req, res) => {
     // Hash the password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Create a new user
+    // Create a new user with a role
     const newUser = new User({
       username,
       password: hashedPassword,
-      permissionId,
+      roleId, // Link the role here
       firstName,
       lastName,
       email,
@@ -35,6 +34,24 @@ const registerUser = async (req, res) => {
     res.status(201).json({ message: "User registered successfully" });
   } catch (error) {
     console.error(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+const getUserDetails = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id).populate("roleId");
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.json({
+      username: user.username,
+      role: user.roleId.roleName,
+      permissions: user.roleId.permissions,
+    });
+  } catch (error) {
+    console.error("Error fetching user details:", error);
     res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -104,7 +121,7 @@ const forgotPassword = async (req, res) => {
     }
 
     const resetToken = crypto.randomBytes(20).toString("hex");
-    const resetExpires = Date.now() + 10 * 60 * 1000;
+    const resetExpires = Date.now() + 10 * 600 * 1000; //updated from 60 to 600
 
     console.log("Generated token:", resetToken); // Log the token immediately after generation
     console.log("Generated date:", resetExpires); // Log the token immediately after generation
