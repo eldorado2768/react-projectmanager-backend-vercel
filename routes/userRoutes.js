@@ -1,8 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const userController = require("../controllers/userController");
-const roleController = require("../controllers/roleController"); // Import roleController
+const roleController = require("../controllers/roleController"); // Import
 
+console.log("roleController:", roleController);
 
 const authMiddleware = require("../authMiddleware"); // Add this line
 
