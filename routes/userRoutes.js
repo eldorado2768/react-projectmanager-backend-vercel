@@ -3,12 +3,10 @@ const router = express.Router();
 const userController = require("../controllers/userController");
 const roleController = require("../controllers/roleController"); // Import
 
-console.log("roleController:", roleController);
-
 const authMiddleware = require("../authMiddleware"); // Add this line
 
 router.post("/register-user", userController.registerUser);
-router.post("/add-role", userController.addRole);
+router.post("/add-role", roleController.addRole);
 router.post("/login", userController.loginUser);
 router.post("/forgot-password", userController.forgotPassword);
 router.post("/reset-password", userController.resetPassword); // Added this line
