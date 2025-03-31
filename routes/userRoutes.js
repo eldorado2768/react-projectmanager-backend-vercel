@@ -10,6 +10,7 @@ router.post("/reset-password", userController.resetPassword); // Added this line
 router.get("/protected", authMiddleware, (req, res) => {
   res.json({ message: "Protected route accessed", user: req.user });
 });
+router.get("/user/:id/details", userController.getUserDetails);
 
 router.post("/testRoute", (req, res) => {
   res.send("Test Route Works");
