@@ -205,7 +205,12 @@ const resetPassword = async (req, res) => {
     // Clear reset token and expiration
     user.resetPasswordToken = null;
     user.resetPasswordExpires = null;
-    await user.save();
+
+    try {
+      await user.save();
+    } catch (error) {
+      console.error("Error saving user:", error);
+    }
 
     console.log("User updated successfully:", user.email);
     res.status(200).json({ message: "Password reset successful" });
