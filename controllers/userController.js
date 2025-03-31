@@ -174,55 +174,43 @@ const isValidPassword = (password) => {
   return passwordRegex.test(password) && password.length >= 8;
 };
 
-/*User resets password*/
 const resetPassword = async (req, res) => {
   try {
     const { token, password } = req.body;
     console.log("Received token:", token);
 
-    // Find the user by reset token and expiration
-    /* const user = await User.findOne({
-      resetPasswordToken: token,
-      resetPasswordExpires: { $gt: Date.now() },
-    });*/
-
+    // Find the user by token and ensure it hasn't expired
     const user = await User.findOne({
-      resetPasswordToken: {
-        $regex: new RegExp(`^${token}$`, "i"),
-      },
+      resetPasswordToken: token,
+      resetPasswordExpires: { $gt: Date.now() }, // Ensure the token is still valid
     });
-
-    /*resetPasswordExpires: { $gt: Date.now() }, temporarily removed from const user*/
-
-    console.log("User found:", user);
-    console.log("Date.now():", Date.now());
 
     if (!user) {
       return res.status(400).json({ message: "Invalid or expired token" });
     }
 
-    // Validate the password
+    // Validate the new password
     if (!isValidPassword(password)) {
       return res.status(400).json({
         message:
-          "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character.",
+          "Password must be at least 8 characters long and include uppercase, lowercase, numbers, and special characters.",
       });
     }
 
-    // Hash the new password
+    // Hash and update the new password
     const hashedPassword = await bcrypt.hash(password, 10);
-
-    // Update the user in the database
     user.password = hashedPassword;
     user.lastUpdated = Date.now();
+
+    // Clear reset token and expiration
     user.resetPasswordToken = null;
     user.resetPasswordExpires = null;
     await user.save();
-    console.log("User updated:", user.email); // Add this line
 
+    console.log("User updated successfully:", user.email);
     res.status(200).json({ message: "Password reset successful" });
   } catch (error) {
-    console.error(error);
+    console.error("Error in resetPassword:", error);
     res.status(500).json({ message: "Internal server error" });
   }
 };
