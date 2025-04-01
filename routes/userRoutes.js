@@ -1,22 +1,45 @@
 const express = require("express");
 const router = express.Router();
 const userController = require("../controllers/userController");
-const roleController = require("../controllers/roleController"); // Import
+const authMiddleware = require("../authMiddleware");
 
-const authMiddleware = require("../authMiddleware"); // Add this line
+router.post("/register-user", async (req, res, next) => {
+  try {
+    return await userController.registerUser(req, res);
+  } catch (error) {
+    next(error); // Passes the error to a centralized error handler
+  }
+});
 
-router.post("/register-user", userController.registerUser);
-router.post("/add-role", roleController.addRole);
-router.post("/login", userController.loginUser);
-router.post("/forgot-password", userController.forgotPassword);
-router.post("/reset-password", userController.resetPassword); // Added this line
+router.post("/login", async (req, res, next) => {
+  try {
+    return await userController.loginUser(req, res);
+  } catch (error) {
+    next(error); // Passes the error to a centralized error handler
+  }
+});
+
+
+
+
+router.post("/forgot-password", async (req, res, next) => {
+  try {
+    return await userController.forgotPassword(req, res);
+  } catch (error) {
+    next(error); // Passes the error to a centralized error handler
+  }
+});
+
+router.post("/reset-password", async (req, res, next) => {
+  try {
+    return await userController.resetPassword(req, res);
+  } catch (error) {
+    next(error); // Passes the error to a centralized error handler
+  }
+});
+
 router.get("/protected", authMiddleware, (req, res) => {
   res.json({ message: "Protected route accessed", user: req.user });
-});
-//router.get("/user/:id/details", userController.getUserDetails);
-
-router.post("/testRoute", (req, res) => {
-  res.send("Test Route Works");
 });
 
 module.exports = router;
