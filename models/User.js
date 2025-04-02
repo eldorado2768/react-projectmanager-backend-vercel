@@ -1,15 +1,15 @@
 const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema({
+  firstName: { type: String, required: true },
+  lastName: { type: String, required: true },
+  email: { type: String, required: true, unique: true },
   username: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
-  permissionId: { type: mongoose.Schema.Types.ObjectId, ref: "Permission" },
-  firstName: { type: String },
-  lastName: { type: String },
-  email: { type: String, unique: true },
-  lastUpdated: { type: Date, default: Date.now },
-  resetPasswordToken: { type: String, default: null }, // Added this line
-  resetPasswordExpires: { type: Date, default: null }, // Added this line
+  password: { type: String },
+  roleId: { type: mongoose.Schema.Types.ObjectId, ref: "Role" },
+  accessCode: { type: String }, // Randomly generated code
+  accessCodeExpires: { type: Date }, // Expiration timestamp
+  isActivated: { type: Boolean, default: false },
 });
 
 module.exports = mongoose.model("User", userSchema);

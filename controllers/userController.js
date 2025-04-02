@@ -2,57 +2,61 @@ const User = require("../models/User");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
+const sendActivationEmail = require("../utilities/sendActivationEmail");
 const crypto = require("crypto");
 
 /*Registers a new user*/
 const registerUser = async (req, res) => {
   try {
-    const { username, password, roleId, firstName, lastName, email } = req.body;
+    const { firstName, lastName, email, roleId } = req.body;
 
-    // Check if user already exists
-    const existingUser = await User.findOne({ username });
-    if (existingUser) {
-      return res.status(400).json({ message: "User already exists" });
+    // Validate required fields
+    if (!firstName || !lastName || !email || !roleId) {
+      return res.status(400).json({ message: "All fields are required." });
     }
 
-    // Hash the password
-    const hashedPassword = await bcrypt.hash(password, 10);
+    // Check if the email is already in use
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ message: "Email is already registered." });
+    }
 
-    // Create a new user with a role
+    // Generate activation code and expiration
+    const accessCode = crypto.randomBytes(16).toString("hex");
+    const accessCodeExpires = new Date(Date.now() + 24 * 60 * 60 * 1000); // Current time + 24 hours
+
+    // Validate the roleId
+    const role = await Role.findById(roleId);
+    if (!role) {
+      return res.status(400).json({ message: "Invalid role ID." });
+    }
+
+    // Create the new user
     const newUser = new User({
-      username,
-      password: hashedPassword,
-      roleId, // Link the role here
       firstName,
       lastName,
       email,
+      username: email, // Username = email
+      roleId: role._id, // Link role to the user
+      accessCode,
+      accessCodeExpires,
+      isActivated: false, // New user is not activated
     });
 
-    // Save the user to the database
     await newUser.save();
 
-    res.status(201).json({ message: "User registered successfully" });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Internal server error" });
-  }
-};
+    // Send activation email
+    const activationLink = `${process.env.CLIENT_URL}/activate?email=${email}&code=${accessCode}`;
+    await sendActivationEmail(email, activationLink);
 
-const getUserDetails = async (req, res) => {
-  try {
-    const user = await User.findById(req.params.id).populate("roleId");
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
-    res.json({
-      username: user.username,
-      role: user.roleId.roleName,
-      permissions: user.roleId.permissions,
+    res.status(201).json({
+      message: `User registered successfully. Activation email sent to ${email}.`,
     });
   } catch (error) {
-    console.error("Error fetching user details:", error);
-    res.status(500).json({ message: "Internal server error" });
+    console.error("Error registering user:", error);
+    res
+      .status(500)
+      .json({ message: "An error occurred while registering the user." });
   }
 };
 
