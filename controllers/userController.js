@@ -3,6 +3,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
 const sendActivationEmail = require("../utilities/sendActivationEmail");
+const Role = require("../models/Role");
 const crypto = require("crypto");
 
 /*Registers a new user*/
