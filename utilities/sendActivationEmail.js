@@ -7,8 +7,8 @@ const sendActivationEmail = async (email, activationLink) => {
     port: 587,
     secure: false,
     auth: {
-      user: process.env.EMAIL_USER, // Email address from your .env file
-      pass: process.env.EMAIL_PASS, // Password or app-specific password
+      user: process.env.MAILERSEND_USER, // Email address from your .env file
+      pass: process.env.MAILERSEND_PASS, // Password or app-specific password
     },
   });
 
