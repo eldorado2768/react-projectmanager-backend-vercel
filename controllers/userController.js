@@ -61,6 +61,35 @@ const registerUser = async (req, res) => {
   }
 };
 
+/*Activate a new user*/
+const activateUser = async (req, res) => {
+  const { email, accessCode } = req.body;
+
+  try {
+    const user = await User.findOne({ email, accessCode });
+
+    if (!user) {
+      return res.status(400).json({ message: "Invalid activation link." });
+    }
+
+    if (user.isActivated) {
+      return res.status(400).json({ message: "Account is already activated." });
+    }
+
+    user.isActivated = true; // Activate the user
+    user.accessCode = null; // Clear the access code
+    user.accessCodeExpires = null; // Clear the expiration date
+    await user.save();
+
+    res.status(200).json({ message: "Account activated successfully." });
+  } catch (error) {
+    console.error("Error activating user:", error);
+    res
+      .status(500)
+      .json({ message: "An error occurred while activating the user." });
+  }
+};
+
 /*Login an existing user*/
 const loginUser = async (req, res) => {
   try {
@@ -242,4 +271,10 @@ const resetPassword = async (req, res) => {
   }
 };
 
-module.exports = { registerUser, loginUser, forgotPassword, resetPassword };
+module.exports = {
+  registerUser,
+  loginUser,
+  forgotPassword,
+  resetPassword,
+  activateUser,
+};

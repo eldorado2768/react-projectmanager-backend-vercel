@@ -3,6 +3,14 @@ const router = express.Router();
 const userController = require("../controllers/userController");
 const authMiddleware = require("../authMiddleware");
 
+router.post("/activate-user", async (req, res, next) => {
+  try {
+    return await userController.activateUser(req, res); // Call the controller function
+  } catch (error) {
+    next(error); // Pass the error to the centralized error handler
+  }
+});
+
 router.post("/register-user", async (req, res, next) => {
   try {
     return await userController.registerUser(req, res);
@@ -18,9 +26,6 @@ router.post("/login", async (req, res, next) => {
     next(error); // Passes the error to a centralized error handler
   }
 });
-
-
-
 
 router.post("/forgot-password", async (req, res, next) => {
   try {
