@@ -3,7 +3,9 @@ const nodemailer = require("nodemailer");
 const sendActivationEmail = async (email, activationLink) => {
   // Configure the transporter with your email service
   const transporter = nodemailer.createTransport({
-    service: "MailerSend", // Use your email provider (e.g., Gmail, Outlook, etc.)
+    host: "smtp.mailersend.net",
+    port: 587,
+    secure: false,
     auth: {
       user: process.env.EMAIL_USER, // Email address from your .env file
       pass: process.env.EMAIL_PASS, // Password or app-specific password
