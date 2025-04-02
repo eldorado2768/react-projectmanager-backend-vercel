@@ -1,6 +1,9 @@
 const nodemailer = require("nodemailer");
 
-const sendActivationEmail = async (email, activationLink) => {
+const sendActivationEmail = async (email, accessCode) => {
+  //Construct the activation link
+  const activationLink = `${process.env.FRONTEND_URL}/activate-user?email=${email}&code=${accessCode}`;
+
   // Configure the transporter with your email service
   const transporter = nodemailer.createTransport({
     host: "smtp.mailersend.net",
