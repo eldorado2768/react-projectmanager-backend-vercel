@@ -47,7 +47,7 @@ const registerUser = async (req, res) => {
     await newUser.save();
 
     // Send activation email
-    await sendActivationEmail(email, activationLink);
+    await sendActivationEmail(email, accessCode);
 
     res.status(201).json({
       message: `User registered successfully. Activation email sent to ${email}.`,
