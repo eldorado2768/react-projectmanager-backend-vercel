@@ -47,7 +47,6 @@ const registerUser = async (req, res) => {
     await newUser.save();
 
     // Send activation email
-    const activationLink = `${process.env.CLIENT_URL}/activate?email=${email}&code=${accessCode}`;
     await sendActivationEmail(email, activationLink);
 
     res.status(201).json({
