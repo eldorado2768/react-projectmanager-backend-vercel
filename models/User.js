@@ -7,6 +7,8 @@ const userSchema = new mongoose.Schema({
   username: { type: String, required: true, unique: true },
   password: { type: String },
   roleId: { type: mongoose.Schema.Types.ObjectId, ref: "Role" },
+  resetToken: { type: String }, // Randomly generated code
+  resetExpires: { type: Date }, // Expiration timestamp
   accessCode: { type: String }, // Randomly generated code
   accessCodeExpires: { type: Date }, // Expiration timestamp
   isActivated: { type: Boolean, default: false },

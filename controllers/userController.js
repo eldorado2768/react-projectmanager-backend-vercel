@@ -44,6 +44,7 @@ const registerUser = async (req, res) => {
       isActivated: false, // New user is not activated
     });
 
+    //Save the new user record in the database
     await newUser.save();
 
     // Send activation email
@@ -138,10 +139,10 @@ const loginUser = async (req, res) => {
 const forgotPassword = async (req, res) => {
   console.log("forgotPassword function called");
   try {
-    const { emailOrUsername } = req.body;
+    const { email } = req.body;
 
     const user = await User.findOne({
-      $or: [{ email: emailOrUsername }, { username: emailOrUsername }],
+      $or: [{ email: email }],
     });
 
     if (!user) {
