@@ -26,9 +26,6 @@ const registerUser = async (req, res) => {
     const accessCode = crypto.randomBytes(16).toString("hex");
     const accessCodeExpires = new Date(Date.now() + 24 * 60 * 60 * 1000); // Current time + 24 hours
 
-    console.log("accessCode:", accessCode);
-    console.log("accessCodeExpires:", accessCodeExpires);
-
     //add forgot password reset token with null values
     const resetToken = null;
     const resetExpires = null;
