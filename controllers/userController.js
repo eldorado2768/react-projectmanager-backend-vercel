@@ -27,8 +27,8 @@ const registerUser = async (req, res) => {
     const accessCodeExpires = new Date(Date.now() + 24 * 60 * 60 * 1000); // Current time + 24 hours
 
     //add forgot password reset token with null values
-    const resetToken = null;
-    const resetExpires = null;
+    const resetPasswordToken = null;
+    const resetPasswordExpires = null;
 
     // Validate the roleId
     const role = await Role.findById(roleId);
@@ -45,8 +45,8 @@ const registerUser = async (req, res) => {
       roleId: role._id, // Link role to the user
       accessCode,
       accessCodeExpires,
-      resetToken,
-      resetExpires,
+      resetPasswordToken,
+      resetPasswordExpires,
       isActivated: false, // New user is not activated
     });
 
