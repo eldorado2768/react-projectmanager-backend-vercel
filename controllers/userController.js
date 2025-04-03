@@ -30,6 +30,9 @@ const registerUser = async (req, res) => {
     const resetPasswordToken = null;
     const resetPasswordExpires = null;
 
+    //add password with null value
+    const password = null;
+
     // Validate the roleId
     const role = await Role.findById(roleId);
     if (!role) {
@@ -42,6 +45,7 @@ const registerUser = async (req, res) => {
       lastName,
       email,
       username: email, // Username = email
+      password,
       roleId: role._id, // Link role to the user
       accessCode,
       accessCodeExpires,
