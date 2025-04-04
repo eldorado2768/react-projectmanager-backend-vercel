@@ -45,7 +45,13 @@ app.get("/test", (req, res) => {
 // Use Modular Routes
 app.use("/api/users", userRoutes);
 app.use("/api/roles", roleRoutes);
-app.use("/api/permissions", permissionRoutes); // Changed to plural
+app.use("/api/permissions", permissionRoutes);
+app.use((err, req, res, next) => {
+  console.error("Error:", err); // Log the error for debugging
+  res
+    .status(err.status || 500)
+    .json({ message: err.message || "Internal server error" });
+});
 
 // Start the Server
 app.listen(PORT, () => {

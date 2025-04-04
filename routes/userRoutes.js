@@ -3,55 +3,20 @@ const router = express.Router();
 const userController = require("../controllers/userController");
 const { setPassword } = require("../controllers/userController");
 const authMiddleware = require("../authMiddleware");
+const asyncHandler = (fn) => (req, res, next) => {
+  Promise.resolve(fn(req, res, next)).catch(next);
+};
 
-router.post("/activate-user", async (req, res, next) => {
-  try {
-    return await userController.activateUser(req, res); // Call the controller function
-  } catch (error) {
-    next(error); // Pass the error to the centralized error handler
-  }
-});
+const checkSessionActivity = require("../middlewares/sessionMiddleware");
 
-router.post("/register-user", async (req, res, next) => {
-  try {
-    return await userController.registerUser(req, res);
-  } catch (error) {
-    next(error); // Passes the error to a centralized error handler
-  }
-});
-
-router.post("/login", async (req, res, next) => {
-  
-  try {
-    return await userController.loginUser(req, res);
-  } catch (error) {
-    next(error); // Passes the error to a centralized error handler
-  }
-});
-
-router.post("/forgot-password", async (req, res, next) => {
-  try {
-    return await userController.forgotPassword(req, res);
-  } catch (error) {
-    next(error); // Passes the error to a centralized error handler
-  }
-});
-
-router.post("/reset-password", async (req, res, next) => {
-  try {
-    return await userController.resetPassword(req, res);
-  } catch (error) {
-    next(error); // Passes the error to a centralized error handler
-  }
-});
-
-router.post("/set-password", async (req, res, next) => {
-  try {
-    return await userController.setPassword(req, res);
-  } catch (error) {
-    next(error); // Passes the error to a centralized error handler
-  }
-});
+router.post("/activate-user", asyncHandler(userController.activateUser));
+router.post("/register-user", asyncHandler(userController.registerUser));
+router.post("/login", asyncHandler(userController.loginUser));
+router.post("/forgot-password", asyncHandler(userController.forgotPassword));
+router.post("/reset-password", asyncHandler(userController.resetPassword));
+router.post("/set-password", asyncHandler(userController.setPassword));
+router.post("/refresh-token", asyncHandler(userController.refreshToken));
+router.post("/logout-user", asyncHandler(userController.logoutUser));
 
 router.get("/protected", authMiddleware, (req, res) => {
   res.json({ message: "Protected route accessed", user: req.user });

@@ -5,6 +5,9 @@ const sendActivationEmail = require("../utilities/sendActivationEmail");
 const sendResetPasswordEmail = require("../utilities/sendResetPasswordEmail");
 const Role = require("../models/Role");
 const crypto = require("crypto");
+const jwt = require("jsonwebtoken");
+const redis = require("redis");
+const redisClient = redis.createClient(); // Adjust configuration if needed
 
 const frontendURL =
   "https://react-projectmanager-git-master-david-brotmans-projects.vercel.app";
@@ -147,16 +150,12 @@ const loginUser = async (req, res) => {
     const receivedUsername = req.body.username.trim();
     const receivedPassword = req.body.password.trim();
 
-    console.log("Received Username:", receivedUsername);
-    console.log("Received Password:", receivedPassword);
-
-    const user = await User.findOne({ username: receivedUsername }).lean;
+    const user = await User.findOne({ username: receivedUsername }).lean();
 
     if (!user) {
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
-    const databaseUsername = user.username.trim();
     const databasePassword = user.password.trim();
 
     const passwordMatch = bcrypt.compareSync(
@@ -168,16 +167,82 @@ const loginUser = async (req, res) => {
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
-    // Generate JWT
-    const token = jwt.sign(
+    // Generate access token (short-lived)
+    const accessToken = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
+      expiresIn: "1h",
+    });
+
+    // Generate refresh token (long-lived)
+    const refreshToken = jwt.sign(
       { userId: user._id },
-      process.env.JWT_SECRET, // Use environment variable for secret
-      { expiresIn: "1h" } // Token expires in 1 hour
+      process.env.REFRESH_TOKEN_SECRET, // Use a separate secret for refresh tokens
+      { expiresIn: "7d" } // Example: valid for 7 days
     );
 
-    res.status(200).json({ token });
+    // Generate sessionID
+    const sessionID = crypto.randomBytes(20).toString("hex");
+    const sessionData = {
+      token: accessToken,
+      lastActivity: Date.now(),
+    };
+
+    // Store session info in Redis
+    await redisClient.set(sessionID, JSON.stringify(sessionData));
+
+    // Send response with both access and refresh tokens
+    res.status(200).json({
+      sessionID, // Send session ID to client
+      accessToken,
+      refreshToken, // Include refresh token
+      message: "Login successful",
+    });
   } catch (error) {
-    console.error(error);
+    console.error("Error in loginUser:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+//user requests a new token
+const refreshToken = async (req, res) => {
+  try {
+    const { token } = req.body;
+
+    if (!token) {
+      return res.status(401).json({ message: "Refresh token required" });
+    }
+
+    // Verify refresh token
+    jwt.verify(token, process.env.REFRESH_TOKEN_SECRET, (err, decoded) => {
+      if (err) {
+        return res.status(403).json({ message: "Invalid refresh token" });
+      }
+
+      // Generate new access token
+      const newAccessToken = jwt.sign(
+        { userId: decoded.userId },
+        process.env.JWT_SECRET,
+        { expiresIn: "1h" }
+      );
+
+      res.status(200).json({ accessToken: newAccessToken });
+    });
+  } catch (error) {
+    console.error("Error in refreshToken:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+//user logouts of system
+const logoutUser = async (req, res) => {
+  try {
+    const { refreshToken } = req.body;
+
+    // Optionally remove the refresh token from the database
+    await RefreshTokenModel.deleteOne({ token: refreshToken });
+
+    res.status(200).json({ message: "Logout successful" });
+  } catch (error) {
+    console.error("Error in logoutUser:", error);
     res.status(500).json({ message: "Internal server error" });
   }
 };
