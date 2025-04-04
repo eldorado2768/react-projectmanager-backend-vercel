@@ -123,6 +123,8 @@ const setPassword = async (req, res) => {
     const saltRounds = 10;
     const hashedPassword = await bcrypt.hash(password, saltRounds);
 
+    console.log("Hashed password saved:", hashedPassword);
+
     // Update user's password
     user.password = hashedPassword;
     await user.save();
