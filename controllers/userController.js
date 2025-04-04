@@ -123,8 +123,6 @@ const setPassword = async (req, res) => {
     const saltRounds = 10;
     const hashedPassword = await bcrypt.hash(password, saltRounds);
 
-    console.log("Hashed password saved:", hashedPassword);
-
     // Update user's password
     user.password = hashedPassword;
     await user.save();
@@ -163,12 +161,7 @@ const loginUser = async (req, res) => {
       databasePassword
     );
 
-    console.log("Database Username:", databaseUsername);
-    console.log("Received Password from login:", receivedPassword);
-    console.log("Password in database:", databasePassword);
-
-    console.log("Password Match:", passwordMatch);
-
+    
     if (!passwordMatch) {
       return res.status(401).json({ message: "Invalid credentials" });
     }
