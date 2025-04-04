@@ -3,8 +3,12 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
 const sendActivationEmail = require("../utilities/sendActivationEmail");
+const sendResetPasswordEmail = require("./utilitiessendResetPasswordEmail");
 const Role = require("../models/Role");
 const crypto = require("crypto");
+
+const frontendURL =
+  "https://react-projectmanager-git-master-david-brotmans-projects.vercel.app";
 
 /*Registers a new user*/
 const registerUser = async (req, res) => {
@@ -147,7 +151,7 @@ const loginUser = async (req, res) => {
     console.log("Received Username:", receivedUsername);
     console.log("Received Password:", receivedPassword);
 
-    const user = await User.findOne({ username: receivedUsername });
+    const user = await User.findOne({ username: receivedUsername }).lean;
 
     if (!user) {
       return res.status(401).json({ message: "Invalid credentials" });
@@ -161,7 +165,6 @@ const loginUser = async (req, res) => {
       databasePassword
     );
 
-    
     if (!passwordMatch) {
       return res.status(401).json({ message: "Invalid credentials" });
     }
@@ -188,13 +191,10 @@ const forgotPassword = async (req, res) => {
 
     const user = await User.findOne({
       $or: [{ email: email }],
-    });
+    }).lean();
 
     if (!user) {
-      res.setHeader(
-        "Access-Control-Allow-Origin",
-        "https://react-projectmanager-git-master-david-brotmans-projects.vercel.app"
-      );
+      res.setHeader("Access-Control-Allow-Origin", frontendURL);
       res.setHeader("Content-Type", "application/json");
       return res.status(404).json({ message: "User not found" });
     }
@@ -202,63 +202,29 @@ const forgotPassword = async (req, res) => {
     const resetToken = crypto.randomBytes(20).toString("hex");
     const resetExpires = Date.now() + 10 * 600 * 1000; //updated from 60 to 600
 
-    console.log("Generated token:", resetToken); // Log the token immediately after generation
-    console.log("Generated date:", resetExpires); // Log the token immediately after generation
-    console.log("User object before save:", user); // Log the user object before save
-
     user.resetPasswordToken = resetToken;
     user.resetPasswordExpires = resetExpires;
 
-    // Retrieve user.email before user.save()
     const userEmail = user.email;
     await user.save();
 
-    console.log("User object after save:", user); // Log the user object after save
-
     const resetLink = `https://react-projectmanager-git-master-david-brotmans-projects.vercel.app/reset-password/${resetToken}`;
 
-    const transporter = nodemailer.createTransport({
-      host: "smtp.mailersend.net", // MailSend SMTP server
-      port: 587,
-      secure: false,
-      auth: {
-        user: process.env.MAILERSEND_USER, //Mailsend user
-        pass: process.env.MAILERSEND_PASS, //Mailsend password
-      },
-    });
+    // Send reset password email using the utility
+    const emailResult = await sendResetPasswordEmail(userEmail, resetLink);
 
-    const mailOptions = {
-      from: process.env.EMAIL_USER,
-      to: userEmail,
-      subject: "Password Reset",
-      text: `Please click on the following link to reset your password: ${resetLink}`,
-    };
-
-    transporter.sendMail(mailOptions, (error, info) => {
-      if (error) {
-        console.error("Error sending email:", error);
-        res.setHeader(
-          "Access-Control-Allow-Origin",
-          "https://react-projectmanager-git-master-david-brotmans-projects.vercel.app"
-        );
-        res.setHeader("Content-Type", "application/json");
-        return res.status(500).json({ message: "Failed to send reset email." });
-      } else {
-        console.log("Email sent:", info.response);
-        res.setHeader(
-          "Access-Control-Allow-Origin",
-          "https://react-projectmanager-git-master-david-brotmans-projects.vercel.app"
-        );
-        res.setHeader("Content-Type", "application/json");
-        return res.json({ message: "Reset email sent successfully." });
-      }
-    });
+    if (emailResult.success) {
+      res.setHeader("Access-Control-Allow-Origin", frontendURL);
+      res.setHeader("Content-Type", "application/json");
+      return res.json({ message: "Reset email sent successfully." });
+    } else {
+      res.setHeader("Access-Control-Allow-Origin", frontendURL);
+      res.setHeader("Content-Type", "application/json");
+      return res.status(500).json({ message: emailResult.message });
+    }
   } catch (error) {
     console.error(error);
-    res.setHeader(
-      "Access-Control-Allow-Origin",
-      "https://react-projectmanager-git-master-david-brotmans-projects.vercel.app"
-    );
+    res.setHeader("Access-Control-Allow-Origin", frontendURL);
     res.setHeader("Content-Type", "application/json");
     return res.status(500).json({ message: "Internal server error" });
   }
