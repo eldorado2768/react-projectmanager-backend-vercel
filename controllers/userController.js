@@ -5,7 +5,6 @@ const sendActivationEmail = require("../utilities/sendActivationEmail");
 const sendResetPasswordEmail = require("../utilities/sendResetPasswordEmail");
 const Role = require("../models/Role");
 const crypto = require("crypto");
-const jwt = require("jsonwebtoken");
 const redis = require("redis");
 const redisClient = redis.createClient(); // Adjust configuration if needed
 
