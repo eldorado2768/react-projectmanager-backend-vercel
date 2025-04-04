@@ -100,6 +100,44 @@ const activateUser = async (req, res) => {
   }
 };
 
+/*Set password for a new activated user*/
+const setPassword = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    // Validate inputs
+    if (!email || !password) {
+      return res
+        .status(400)
+        .json({ message: "Email and password are required." });
+    }
+
+    // Find user by email
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found." });
+    }
+
+    // Hash the new password
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+    // Update user's password
+    user.password = hashedPassword;
+    await user.save();
+
+    res
+      .status(200)
+      .json({ success: true, message: "Password created successfully." });
+  } catch (error) {
+    console.error("Error setting password:", error);
+    res.status(500).json({ message: "Internal server error." });
+  }
+};
+
+module.exports = { setPassword };
+
 /*Login an existing user*/
 const loginUser = async (req, res) => {
   try {
@@ -259,7 +297,8 @@ const resetPassword = async (req, res) => {
     }
 
     // Hash and update the new password
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
     user.password = hashedPassword;
     user.lastUpdated = Date.now();
 
@@ -283,6 +322,7 @@ const resetPassword = async (req, res) => {
 
 module.exports = {
   registerUser,
+  setPassword,
   loginUser,
   forgotPassword,
   resetPassword,
