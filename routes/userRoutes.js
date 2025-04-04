@@ -13,7 +13,6 @@ router.post("/activate-user", async (req, res, next) => {
 });
 
 router.post("/register-user", async (req, res, next) => {
-  console.log("Register route invoked");
   try {
     return await userController.registerUser(req, res);
   } catch (error) {
@@ -22,6 +21,7 @@ router.post("/register-user", async (req, res, next) => {
 });
 
 router.post("/login", async (req, res, next) => {
+  console.log("Login route invoked");
   try {
     return await userController.loginUser(req, res);
   } catch (error) {
