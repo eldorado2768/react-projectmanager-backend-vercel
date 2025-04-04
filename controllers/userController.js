@@ -1,9 +1,8 @@
 const User = require("../models/User");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const nodemailer = require("nodemailer");
 const sendActivationEmail = require("../utilities/sendActivationEmail");
-const sendResetPasswordEmail = require("./utilitiessendResetPasswordEmail");
+const sendResetPasswordEmail = require("../utilities/sendResetPasswordEmail");
 const Role = require("../models/Role");
 const crypto = require("crypto");
 
