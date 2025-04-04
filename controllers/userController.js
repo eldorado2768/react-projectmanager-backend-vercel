@@ -190,7 +190,7 @@ const forgotPassword = async (req, res) => {
 
     const user = await User.findOne({
       $or: [{ email: email }],
-    }).lean();
+    });
 
     if (!user) {
       res.setHeader("Access-Control-Allow-Origin", frontendURL);
