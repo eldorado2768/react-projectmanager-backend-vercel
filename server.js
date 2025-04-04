@@ -4,6 +4,8 @@ const mongoose = require("mongoose");
 const userRoutes = require("./routes/userRoutes");
 const roleRoutes = require("./routes/roleRoutes");
 const permissionRoutes = require("./routes/permissionRoutes");
+const permissionRoutes = require("./routes/permissionRoutes");
+
 
 const app = express();
 const PORT = process.env.PORT || 5000;
