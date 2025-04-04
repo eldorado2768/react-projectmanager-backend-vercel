@@ -156,13 +156,15 @@ const loginUser = async (req, res) => {
     const databaseUsername = user.username.trim();
     const databasePassword = user.password.trim();
 
-    console.log("Database Username:", databaseUsername);
-    console.log("Database Hashed Password:", databasePassword);
-
     const passwordMatch = bcrypt.compareSync(
       receivedPassword,
       databasePassword
     );
+
+    console.log("Database Username:", databaseUsername);
+    console.log("Received Password from login:", receivedPassword);
+    console.log("Password in database:", databasePassword);
+
     console.log("Password Match:", passwordMatch);
 
     if (!passwordMatch) {

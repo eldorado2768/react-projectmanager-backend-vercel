@@ -27,14 +27,10 @@ const sendActivationEmail = async (email, accessCode) => {
     html: `<p>Welcome! Please click the following link to activate your account:</p><a href="${activationLink}">Activate Account</a>`,
   };
 
-  //check to see that the link is being generated properly
-  console.log("Activation Link:", activationLink);
-
-  try {
+   try {
     // Send the email
     await transporter.sendMail(mailOptions);
-    console.log(`Activation email sent to ${email}`);
-  } catch (error) {
+   } catch (error) {
     console.error("Error sending activation email:", error);
     throw new Error("Failed to send activation email.");
   }
