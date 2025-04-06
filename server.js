@@ -7,7 +7,7 @@ const permissionRoutes = require("./routes/permissionRoutes");
 const redisClient = require("./config/redisClient"); // Adjust the path as needed
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 10000;
 
 // Validate Environment Variables
 if (!process.env.MONGODB_URI) {
