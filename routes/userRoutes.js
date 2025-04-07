@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const userController = require("../controllers/userController");
 const { setPassword } = require("../controllers/userController");
-const authMiddleware = require("../authMiddleware");
+
 const asyncHandler = (fn) => (req, res, next) => {
   Promise.resolve(fn(req, res, next)).catch(next);
 };
@@ -17,9 +17,5 @@ router.post("/reset-password", asyncHandler(userController.resetPassword));
 router.post("/set-password", asyncHandler(userController.setPassword));
 router.post("/refresh-token", asyncHandler(userController.refreshToken));
 router.post("/logout-user", asyncHandler(userController.logoutUser));
-
-router.get("/protected", authMiddleware, (req, res) => {
-  res.json({ message: "Protected route accessed", user: req.user });
-});
 
 module.exports = router;
