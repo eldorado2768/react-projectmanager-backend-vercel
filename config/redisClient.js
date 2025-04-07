@@ -1,10 +1,10 @@
 const redis = require("redis");
 
 const redisClient = redis.createClient({
-  url: "redis://red-cvo7gaumcj7s73fus710:6379", // Switch to plain redis:// protocol
+  url: "rediss://default:b972afc35018708f98b6f198711d7987@master.app-keydb-addon--f7dc6rb57l8c.addon.code.run:6379",
 });
 
-(async () => {
+async () => {
   try {
     console.log("Initializing Redis connection...");
     await redisClient.connect();
@@ -16,4 +16,4 @@ const redisClient = redis.createClient({
   } catch (error) {
     console.error("Redis connection failed:", error); // More detailed logging
   }
-})();
+};
