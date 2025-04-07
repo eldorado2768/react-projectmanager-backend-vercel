@@ -7,8 +7,6 @@ const asyncHandler = (fn) => (req, res, next) => {
   Promise.resolve(fn(req, res, next)).catch(next);
 };
 
-const checkSessionActivity = require("../middleware/sessionMiddleware");
-
 router.post("/activate-user", asyncHandler(userController.activateUser));
 router.post("/register-user", asyncHandler(userController.registerUser));
 router.post("/login", asyncHandler(userController.loginUser));
