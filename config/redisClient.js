@@ -1,21 +1,19 @@
 const redis = require("redis");
 
 const redisClient = redis.createClient({
-  url: "redis://red-cvo7gaumcj7s73fus710:oX0sL6ob6uV6CddsCRAyFGYtS7lOo3wr@oregon-keyvalue.render.com:6379",
-});
-
-redisClient.on("error", (error) => {
-  console.error("Redis Client Error:", error); // Log connection errors
+  url: "redis://red-cvo7gaumcj7s73fus710:6379", // Switch to plain redis:// protocol
 });
 
 (async () => {
   try {
-    console.log("Attempting Redis connection...");
-    await redisClient.connect(); // Explicitly connect
+    console.log("Initializing Redis connection...");
+    await redisClient.connect();
     console.log("Redis connected successfully!");
+
+    // Test Redis PING
+    const result = await redisClient.ping();
+    console.log("PING response:", result); // Expected: "PONG"
   } catch (error) {
-    console.error("Redis connection failed:", error); // Detailed error
+    console.error("Redis connection failed:", error); // More detailed logging
   }
 })();
-
-module.exports = redisClient;
