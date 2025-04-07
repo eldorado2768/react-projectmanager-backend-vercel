@@ -5,7 +5,11 @@ const redisClient = redis.createClient({
 });
 
 redisClient.on("error", (error) => {
-  console.error("KeyDB Client Error:", error); // Logs connection errors
+  console.error("KeyDB Client Error:", error);
+  if (error.code === "ECONNRESET") {
+    console.log("Connection reset detected. Retrying...");
+    setTimeout(() => redisClient.connect(), 5000); // Retry after 5 seconds
+  }
 });
 
 (async () => {
