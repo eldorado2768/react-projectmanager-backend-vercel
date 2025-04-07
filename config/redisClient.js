@@ -1,7 +1,10 @@
 const redis = require("redis");
 
+const externalURL =
+  "rediss://red-cvo7gaumcj7s73fus710:oX0sL6ob6uV6CddsCRAyFGYtS7lOo3wr@oregon-keyvalue.render.com:6379";
+
 const redisClient = redis.createClient({
-  url: "redis://red-cvo7gaumcj7s73fus710:6379", 
+  url: externalURL,
 });
 
 redisClient.on("error", (error) => {
