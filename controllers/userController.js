@@ -5,8 +5,6 @@ const sendActivationEmail = require("../utilities/sendActivationEmail");
 const sendResetPasswordEmail = require("../utilities/sendResetPasswordEmail");
 const Role = require("../models/Role");
 const crypto = require("crypto");
-const redis = require("redis");
-const redisClient = redis.createClient(); // Adjust configuration if needed
 
 const frontendURL =
   "https://react-projectmanager-git-master-david-brotmans-projects.vercel.app";
@@ -185,9 +183,7 @@ const loginUser = async (req, res) => {
       lastActivity: Date.now(),
     };
 
-    // Store session info in Redis
-    await redisClient.set(sessionID, JSON.stringify(sessionData));
-
+    
     // Send response with both access and refresh tokens
     res.status(200).json({
       sessionID, // Send session ID to client

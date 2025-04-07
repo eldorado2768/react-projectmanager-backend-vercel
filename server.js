@@ -4,7 +4,6 @@ const mongoose = require("mongoose");
 const userRoutes = require("./routes/userRoutes");
 const roleRoutes = require("./routes/roleRoutes");
 const permissionRoutes = require("./routes/permissionRoutes");
-//const redisClient = require("./config/redisClient"); // Adjust the path as needed
 
 const app = express();
 const PORT = process.env.PORT || 10000;
