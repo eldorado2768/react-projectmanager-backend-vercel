@@ -1,18 +1,16 @@
 const express = require("express");
 const router = express.Router();
 const permissionController = require("../controllers/permissionController"); // Fixed variable name
-const authMiddleware = require("../authMiddleware"); // Middleware for authentication
+const authMiddleware = require("../middleware/authMiddleware"); // Middleware for authentication
 
 // Middleware to check if the user has one of the required roles
 const rolesRequired = (roles) => (req, res, next) => {
   if (!roles.includes(req.user?.role)) {
-    return res
-      .status(403)
-      .json({
-        message: `Access denied. One of the following roles required: ${roles.join(
-          ", "
-        )}`,
-      });
+    return res.status(403).json({
+      message: `Access denied. One of the following roles required: ${roles.join(
+        ", "
+      )}`,
+    });
   }
   next();
 };
