@@ -1,5 +1,5 @@
 const User = require("../models/User");
-const User = require("../models/Session");
+const Session = require("../models/Session");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const sendActivationEmail = require("../utilities/sendActivationEmail");
@@ -177,20 +177,18 @@ const loginUser = async (req, res) => {
       { expiresIn: "7d" } // Example: valid for 7 days
     );
 
-
-
     // Generate sessionID
     const sessionID = crypto.randomBytes(20).toString("hex");
-    const sessionData = {
-      sessionID,
+
+    const newSession = new Session({
+      sessionID: sessionID,
       token: accessToken,
       lastActivity: Date.now(),
       expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000), // Expires in 24 hours
-    };
+    });
 
     // Store session info in the database
-   // await db.collection("Sessions").insertOne(sessionData);
-    await sessionData.save();
+    await newSession.save();
 
     console.log(`Session stored in database: ${sessionData.sessionID}`);
 
