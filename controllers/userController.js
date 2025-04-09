@@ -1,4 +1,5 @@
 const User = require("../models/User");
+const User = require("../models/Session");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const sendActivationEmail = require("../utilities/sendActivationEmail");
@@ -176,6 +177,8 @@ const loginUser = async (req, res) => {
       { expiresIn: "7d" } // Example: valid for 7 days
     );
 
+
+
     // Generate sessionID
     const sessionID = crypto.randomBytes(20).toString("hex");
     const sessionData = {
@@ -186,7 +189,8 @@ const loginUser = async (req, res) => {
     };
 
     // Store session info in the database
-    await db.collection("Sessions").insertOne(sessionData);
+   // await db.collection("Sessions").insertOne(sessionData);
+    await sessionData.save();
 
     console.log(`Session stored in database: ${sessionData.sessionID}`);
 
