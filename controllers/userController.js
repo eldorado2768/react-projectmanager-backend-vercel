@@ -190,7 +190,7 @@ const loginUser = async (req, res) => {
     // Store session info in the database
     await newSession.save();
 
-    console.log(`Session stored in database: ${sessionData.sessionID}`);
+    console.log(`Session stored in database: ${newSession.sessionID}`);
 
     // Send response with both access and refresh tokens
     res.status(200).json({
