@@ -363,4 +363,5 @@ module.exports = {
   forgotPassword,
   resetPassword,
   activateUser,
+  logoutUser,
 };
