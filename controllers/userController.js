@@ -236,21 +236,31 @@ const refreshToken = async (req, res) => {
 };
 
 //user logouts of system
+
 const logoutUser = async (req, res) => {
   try {
-    const { refreshToken } = req.body;
-    const sessionID = req.headers["x-session-id"]; // Expect session ID in headers
+    const receivedSessionID = req.headers["x-session-id"]; // Retrieve session ID from headers
 
-    // Step 1: Remove the refresh token from the database
-    if (refreshToken) {
-      await RefreshTokenModel.deleteOne({ token: refreshToken });
+    // Validate session ID exists
+    if (!receivedSessionID) {
+      return res.status(400).json({ message: "Session ID is missing" });
     }
 
-    // Step 2: Remove the session from the database
-    if (sessionID) {
-      await db.collection("Sessions").deleteOne({ sessionID });
+    // Locate the session in the database
+    const session = await Session.findOne({
+      sessionID: receivedSessionID,
+    }).lean();
+    if (!session) {
+      return res.status(401).json({ message: "Invalid session" });
     }
 
+    // Delete the session from the database
+    await Session.deleteOne({ sessionID: receivedSessionID });
+
+    // (Optional) Log the operation for auditing/debugging
+    console.log(`Session ${receivedSessionID} successfully deleted`);
+
+    // Respond to the client
     res.status(200).json({ message: "Logout successful" });
   } catch (error) {
     console.error("Error in logoutUser:", error);
