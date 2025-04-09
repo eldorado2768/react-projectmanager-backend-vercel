@@ -192,13 +192,24 @@ const loginUser = async (req, res) => {
 
     console.log(`Session stored in database: ${newSession.sessionID}`);
 
-    // Send response with both access and refresh tokens
-    res.status(200).json({
-      sessionID, // Send session ID to client
-      accessToken,
-      refreshToken, // Include refresh token
-      message: "Login successful",
-    });
+    // Redirect Based on User Role
+    if (user.role === "superadmin") {
+      return res.status(200).json({
+        redirectUrl: "/superadmin.html",
+        sessionID,
+        accessToken,
+        refreshToken,
+        message: "Login successful",
+      });
+    } else {
+      return res.status(200).json({
+        redirectUrl: "/index.html",
+        sessionID,
+        accessToken,
+        refreshToken,
+        message: "Login successful",
+      });
+    }
   } catch (error) {
     console.error("Error in loginUser:", error);
     res.status(500).json({ message: "Internal server error" });
