@@ -179,11 +179,17 @@ const loginUser = async (req, res) => {
     // Generate sessionID
     const sessionID = crypto.randomBytes(20).toString("hex");
     const sessionData = {
+      sessionID,
       token: accessToken,
       lastActivity: Date.now(),
+      expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000), // Expires in 24 hours
     };
 
-    
+    // Store session info in the database
+    await db.collection("Sessions").insertOne(sessionData);
+
+    console.log(`Session stored in database: ${sessionData.sessionID}`);
+
     // Send response with both access and refresh tokens
     res.status(200).json({
       sessionID, // Send session ID to client
@@ -231,9 +237,17 @@ const refreshToken = async (req, res) => {
 const logoutUser = async (req, res) => {
   try {
     const { refreshToken } = req.body;
+    const sessionID = req.headers["x-session-id"]; // Expect session ID in headers
 
-    // Optionally remove the refresh token from the database
-    await RefreshTokenModel.deleteOne({ token: refreshToken });
+    // Step 1: Remove the refresh token from the database
+    if (refreshToken) {
+      await RefreshTokenModel.deleteOne({ token: refreshToken });
+    }
+
+    // Step 2: Remove the session from the database
+    if (sessionID) {
+      await db.collection("Sessions").deleteOne({ sessionID });
+    }
 
     res.status(200).json({ message: "Logout successful" });
   } catch (error) {
