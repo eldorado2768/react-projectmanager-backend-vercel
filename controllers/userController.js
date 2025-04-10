@@ -212,10 +212,11 @@ const loginUser = async (req, res) => {
     await newSession.save();
 
     // Redirect Based on User Role
-    const redirectUrl = roleRedirects[user.roleName] || "/login"; // Default to login if role is undefined
+    const redirectUrl = roleRedirects[roleName] || "/login"; // Default to login if role is undefined
     return res.status(200).json({
       redirectUrl,
       sessionID,
+      roleName,
       accessToken,
       refreshToken,
       message: "Login successful",
