@@ -198,7 +198,7 @@ const loginUser = async (req, res) => {
     // Store session info in the database
     await newSession.save();
 
-    console.log(`Session stored in database: ${newSession.sessionID}`);
+    console.log("roleRedirects[user.role]", roleRedirects[user.role]);
 
     // Redirect Based on User Role
     const redirectUrl = roleRedirects[user.role] || "/login"; // Default to login if role is undefined
@@ -214,7 +214,6 @@ const loginUser = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
-
 
 //user requests a new token
 const refreshToken = async (req, res) => {
