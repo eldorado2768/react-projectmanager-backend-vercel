@@ -152,19 +152,32 @@ const loginUser = async (req, res) => {
     // Add more roles as needed
   };
 
+  const receivedUsername = req.body.username.trim();
+  const receivedPassword = req.body.password.trim();
+
   try {
-    const receivedUsername = req.body.username.trim();
-    const receivedPassword = req.body.password.trim();
+    // Query user with populated role
+    const user = await User.findOne({ username: receivedUsername })
+      .populate("roleID")
+      .lean();
 
-    const user = await User.findOne({ username: receivedUsername }).lean();
-
+    //Validate user existence
     if (!user) {
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
-    const databasePassword = user.password.trim();
+    //Ensure roleID and corresponding roleName exist
+    if (!user.roleID || !user.roleID.roleName) {
+      return res
+        .status(500)
+        .json({ message: "User role is not properly defined." });
+    }
 
-    const passwordMatch = bcrypt.compareSync(
+    const roleName = user.roleID.roleName;
+
+    //Compare password received to database password
+    const databasePassword = user.password.trim();
+    const passwordMatch = await bcrypt.compare(
       receivedPassword,
       databasePassword
     );
@@ -198,10 +211,8 @@ const loginUser = async (req, res) => {
     // Store session info in the database
     await newSession.save();
 
-    console.log("roleRedirects[user.role]", roleRedirects[user.role]);
-
     // Redirect Based on User Role
-    const redirectUrl = roleRedirects[user.role] || "/login"; // Default to login if role is undefined
+    const redirectUrl = roleRedirects[user.roleName] || "/login"; // Default to login if role is undefined
     return res.status(200).json({
       redirectUrl,
       sessionID,
