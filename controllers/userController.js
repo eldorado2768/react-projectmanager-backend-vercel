@@ -144,6 +144,14 @@ module.exports = { setPassword };
 
 /*Login an existing user*/
 const loginUser = async (req, res) => {
+  //Establish the different routes for different roles
+  const roleRedirects = {
+    superadmin: "/superadmin",
+    admin: "/admin",
+    user: "/index",
+    // Add more roles as needed
+  };
+
   try {
     const receivedUsername = req.body.username.trim();
     const receivedPassword = req.body.password.trim();
@@ -193,23 +201,14 @@ const loginUser = async (req, res) => {
     console.log(`Session stored in database: ${newSession.sessionID}`);
 
     // Redirect Based on User Role
-    if (user.role === "superadmin") {
-      return res.status(200).json({
-        redirectUrl: "/superadmin.html",
-        sessionID,
-        accessToken,
-        refreshToken,
-        message: "Login successful",
-      });
-    } else {
-      return res.status(200).json({
-        redirectUrl: "/index.html",
-        sessionID,
-        accessToken,
-        refreshToken,
-        message: "Login successful",
-      });
-    }
+    const redirectUrl = roleRedirects[user.role] || "/login"; // Default to login if role is undefined
+    return res.status(200).json({
+      redirectUrl,
+      sessionID,
+      accessToken,
+      refreshToken,
+      message: "Login successful",
+    });
   } catch (error) {
     console.error("Error in loginUser:", error);
     res.status(500).json({ message: "Internal server error" });
