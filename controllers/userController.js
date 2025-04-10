@@ -158,7 +158,7 @@ const loginUser = async (req, res) => {
   try {
     // Query user with populated role
     const user = await User.findOne({ username: receivedUsername })
-      .populate("roleID")
+      .populate("roleId")
       .lean();
 
     //Validate user existence
@@ -167,13 +167,13 @@ const loginUser = async (req, res) => {
     }
 
     //Ensure roleID and corresponding roleName exist
-    if (!user.roleID || !user.roleID.roleName) {
+    if (!user.roleId || !user.roleId.roleName) {
       return res
         .status(500)
         .json({ message: "User role is not properly defined." });
     }
 
-    const roleName = user.roleID.roleName;
+    const roleName = user.roleId.roleName;
 
     //Compare password received to database password
     const databasePassword = user.password.trim();
