@@ -19,11 +19,9 @@ const addRole = async (req, res) => {
     }
     for (const permission of permissions) {
       if (!permission.tableName || !permission.accessType) {
-        return res
-          .status(400)
-          .json({
-            message: "Each permission must have tableName and accessType.",
-          });
+        return res.status(400).json({
+          message: "Each permission must have tableName and accessType.",
+        });
       }
     }
 

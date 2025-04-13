@@ -7,8 +7,6 @@ const sendResetPasswordEmail = require("../utilities/sendResetPasswordEmail");
 const Role = require("../models/Role");
 const crypto = require("crypto");
 
-//const frontendURL =
- // "https://react-projectmanager-git-master-david-brotmans-projects.vercel.app";
 
 /*Registers a new user*/
 const registerUser = async (req, res) => {
@@ -315,7 +313,7 @@ const forgotPassword = async (req, res) => {
     const userEmail = user.email;
     await user.save();
 
-    const resetLink = process.env.FRONT_END_BASEURL +`/reset-password/${resetToken}`;
+    const resetLink = process.env.FRONTEND_URL +`/reset-password/${resetToken}`;
 
     // Send reset password email using the utility
     const emailResult = await sendResetPasswordEmail(userEmail, resetLink);
