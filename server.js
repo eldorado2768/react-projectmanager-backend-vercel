@@ -15,7 +15,7 @@ if (!process.env.MONGODB_URI) {
 }
 
 // Configure CORS
-const allowedOrigins = [process.env.FRONT_END_BASEURL,];
+const allowedOrigins = [process.env.FRONTEND_URL,];
 app.use(
   cors({
     origin: allowedOrigins,

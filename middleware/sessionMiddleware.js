@@ -10,11 +10,9 @@ const checkSessionActivity = async (req, res, next) => {
     const session = await db.collection("Sessions").findOne({ sessionID });
 
     if (!session) {
-      return res
-        .status(401)
-        .json({
-          message: "Session expired or not found. Please log in again.",
-        });
+      return res.status(401).json({
+        message: "Session expired or not found. Please log in again.",
+      });
     }
 
     // Check inactivity period
