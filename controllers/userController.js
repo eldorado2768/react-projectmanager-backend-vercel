@@ -7,7 +7,6 @@ const sendResetPasswordEmail = require("../utilities/sendResetPasswordEmail");
 const Role = require("../models/Role");
 const crypto = require("crypto");
 
-
 /*Registers a new user*/
 const registerUser = async (req, res) => {
   try {
@@ -299,7 +298,7 @@ const forgotPassword = async (req, res) => {
     });
 
     if (!user) {
-      res.setHeader("Access-Control-Allow-Origin", frontendURL);
+      res.setHeader("Access-Control-Allow-Origin", process.env.FRONTEND_URL);
       res.setHeader("Content-Type", "application/json");
       return res.status(404).json({ message: "User not found" });
     }
@@ -313,23 +312,23 @@ const forgotPassword = async (req, res) => {
     const userEmail = user.email;
     await user.save();
 
-    const resetLink = process.env.FRONTEND_URL +`/reset-password/${resetToken}`;
+    const resetLink = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
 
     // Send reset password email using the utility
     const emailResult = await sendResetPasswordEmail(userEmail, resetLink);
 
     if (emailResult.success) {
-      res.setHeader("Access-Control-Allow-Origin", frontendURL);
+      res.setHeader("Access-Control-Allow-Origin", process.env.FRONTEND_URL);
       res.setHeader("Content-Type", "application/json");
       return res.json({ message: "Reset email sent successfully." });
     } else {
-      res.setHeader("Access-Control-Allow-Origin", frontendURL);
+      res.setHeader("Access-Control-Allow-Origin", process.env.FRONTEND_URL);
       res.setHeader("Content-Type", "application/json");
       return res.status(500).json({ message: emailResult.message });
     }
   } catch (error) {
     console.error(error);
-    res.setHeader("Access-Control-Allow-Origin", frontendURL);
+    res.setHeader("Access-Control-Allow-Origin", process.env.FRONTEND_URL);
     res.setHeader("Content-Type", "application/json");
     return res.status(500).json({ message: "Internal server error" });
   }
