@@ -1,5 +1,5 @@
 import express from "express";
-import * as roleController from "../controllers/roleController.js";
+import addRole from "../controllers/roleController.js";
 import protect from "../middleware/protect.js";
 
 const router = express.Router();
@@ -21,7 +21,7 @@ router.post(
   "/add-role",
   protect,
   rolesRequired(["superadmin"]),
-  roleController.addRole
+  asyncHandler(addRole)
 );
 
 // Retrieve an existing role (admin, superadmin)
