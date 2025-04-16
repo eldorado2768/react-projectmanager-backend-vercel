@@ -1,6 +1,6 @@
 import express from "express";
 import permissionController from "../controllers/permissionController.js"; // Fixed variable name
-import authMiddleware from "../middleware/authMiddleware.js"; // Middleware for authentication
+import { protect } from "../middleware/protect.js"; // Middleware for authentication
 
 const router = express.Router();
 

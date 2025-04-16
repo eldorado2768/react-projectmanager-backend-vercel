@@ -1,22 +1,17 @@
 import express from "express";
 import roleController from "../controllers/roleController.js";
-import authMiddleware from "../middleware/authMiddleware.js"; 
+import { protect } from "../middleware/protect.js";
 
 const router = express.Router();
-
-
-
 
 const rolesRequired = (roles) => (req, res, next) => {
   // Check if the user has one of the required roles
   if (!roles.includes(req.user?.role)) {
-    return res
-      .status(403)
-      .json({
-        message: `Access denied. One of the following roles required: ${roles.join(
-          ", "
-        )}`,
-      });
+    return res.status(403).json({
+      message: `Access denied. One of the following roles required: ${roles.join(
+        ", "
+      )}`,
+    });
   }
   next();
 };
