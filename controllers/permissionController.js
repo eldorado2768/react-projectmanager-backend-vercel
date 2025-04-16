@@ -1,4 +1,4 @@
-import Permission from "../models/Permission";
+import Permission from "../models/Permission.js";
 
 const addPermission = async (req, res) => {
   try {

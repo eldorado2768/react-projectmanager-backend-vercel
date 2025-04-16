@@ -1,7 +1,7 @@
 import express from "express";
 import { setPassword } from "../controllers/userController.js";
 import * as userController from "../controllers/userController.js"
-import { protect } from "../middleware/authMiddleware";
+import {protect} from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 

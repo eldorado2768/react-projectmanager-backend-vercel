@@ -1,10 +1,10 @@
-import User from "../models/User";
+import User from "../models/User.js";
 import Session from "../models/Session";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import sendActivationEmail from "../utilities/sendActivationEmail";
-import sendResetPasswordEmail from "../utilities/sendResetPasswordEmail";
-import Role from "../models/Role";
+import sendActivationEmail from "../utilities/sendActivationEmail.js";
+import sendResetPasswordEmail from "../utilities/sendResetPasswordEmail.js";
+import Role from "../models/Role.js";
 import crypto from "crypto";
 import { Request, Response } from "express";
 
