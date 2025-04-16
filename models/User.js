@@ -8,6 +8,7 @@ const userSchema = new mongoose.Schema({
   password: { type: String },
   roleId: { type: mongoose.Schema.Types.ObjectId, ref: "Role" },
   resetPasswordToken: { type: String }, // Randomly generated code
+  sessionId: { type: String },
   resetPasswordExpires: { type: Date }, // Expiration timestamp
   accessCode: { type: String }, // Randomly generated code
   accessCodeExpires: { type: Date }, // Expiration timestamp

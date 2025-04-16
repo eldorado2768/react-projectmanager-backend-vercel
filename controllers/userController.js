@@ -194,10 +194,10 @@ export const loginUser = async (req, res) => {
     );
 
     // Generate sessionID
-    const sessionID = crypto.randomBytes(20).toString("hex");
+    const sessionId = crypto.randomBytes(20).toString("hex");
 
     const newSession = new Session({
-      sessionID: sessionID,
+      sessionId: sessionId,
       token: accessToken,
       lastActivity: Date.now(),
       expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000), // Expires in 24 hours
@@ -210,7 +210,7 @@ export const loginUser = async (req, res) => {
     const redirectUrl = roleRedirects[roleName] || "/login"; // Default to login if role is undefined
     return res.status(200).json({
       redirectUrl,
-      sessionID,
+      sessionId,
       roleName,
       accessToken,
       refreshToken,
