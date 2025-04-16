@@ -57,4 +57,4 @@ const addRole = async (req, res) => {
   }
 };
 
-export {addRole};
+export default addRole;

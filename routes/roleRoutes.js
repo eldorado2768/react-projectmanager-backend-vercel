@@ -1,6 +1,6 @@
 import express from "express";
 import roleController from "../controllers/roleController.js";
-import  protect from "../middleware/protect.js";
+import protect from "../middleware/protect.js";
 
 const router = express.Router();
 
@@ -32,5 +32,3 @@ router.post(
 
 // Delete an existing role (superadmin only)
 //router.delete("/:id", authMiddleware, rolesRequired(["superadmin"]), roleController.deleteRole);
-
-export default router;
