@@ -1,6 +1,5 @@
 import jwt from "jsonwebtoken";
 
-
 const authMiddleware = (req, res, next) => {
   const authHeader = req.headers.authorization;
 
@@ -33,4 +32,4 @@ export const getUserProfile = async (req, res) => {
   }
 };
 
-export default authMiddleware;
+export { protect };
