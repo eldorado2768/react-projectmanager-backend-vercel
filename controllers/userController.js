@@ -289,7 +289,6 @@ const logoutUser = async (req, res) => {
 
 /*User forgets password*/
 const forgotPassword = async (req, res) => {
-  console.log("forgotPassword function called");
   try {
     const { email } = req.body;
 
