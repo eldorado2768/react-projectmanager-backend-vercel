@@ -1,11 +1,12 @@
-const User = require("../models/User");
-const Session = require("../models/Session");
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
-const sendActivationEmail = require("../utilities/sendActivationEmail");
-const sendResetPasswordEmail = require("../utilities/sendResetPasswordEmail");
-const Role = require("../models/Role");
-const crypto = require("crypto");
+import User from "../models/User";
+import Session from "../models/Session";
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
+import sendActivationEmail from "../utilities/sendActivationEmail";
+import sendResetPasswordEmail from "../utilities/sendResetPasswordEmail";
+import Role from "../models/Role";
+import crypto from "crypto";
+import { Request, Response } from "express";
 
 /*Registers a new user*/
 const registerUser = async (req, res) => {
@@ -386,7 +387,40 @@ const resetPassword = async (req, res) => {
   }
 };
 
-module.exports = {
+// Get User Profile
+export const getUserProfile = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id).select("-password");
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    res.json(user);
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+// Update User Profile
+export const updateUserProfile = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Update user fields
+    user.name = req.body.name || user.name;
+    user.email = req.body.email || user.email;
+    user.profilePicture = req.body.profilePicture || user.profilePicture;
+
+    const updatedUser = await user.save();
+    res.json(updatedUser);
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+export {
   registerUser,
   setPassword,
   loginUser,
@@ -395,3 +429,5 @@ module.exports = {
   activateUser,
   logoutUser,
 };
+
+

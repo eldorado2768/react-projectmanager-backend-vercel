@@ -1,4 +1,4 @@
-const Permission = require("../models/Permission");
+import Permission from "../models/Permission";
 
 const addPermission = async (req, res) => {
   try {
@@ -49,4 +49,4 @@ const addPermission = async (req, res) => {
   }
 };
 
-module.exports = { addPermission };
+export default addPermission;

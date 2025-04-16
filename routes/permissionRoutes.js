@@ -1,7 +1,8 @@
-const express = require("express");
+import express from "express";
+import permissionController from "../controllers/permissionController"; // Fixed variable name
+import authMiddleware from "../middleware/authMiddleware"; // Middleware for authentication
+
 const router = express.Router();
-const permissionController = require("../controllers/permissionController"); // Fixed variable name
-const authMiddleware = require("../middleware/authMiddleware"); // Middleware for authentication
 
 // Middleware to check if the user has one of the required roles
 const rolesRequired = (roles) => (req, res, next) => {
@@ -32,4 +33,4 @@ router.post(
 // Placeholder for deleting a permission (superadmin only)
 // router.delete("/:id", authMiddleware, rolesRequired(["superadmin"]), permissionController.deletePermission);
 
-module.exports = router;
+export default router;

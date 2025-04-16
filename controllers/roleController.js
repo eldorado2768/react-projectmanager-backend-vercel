@@ -1,4 +1,4 @@
-const Role = require("../models/Role");
+import Role from "../models/Role";
 
 const addRole = async (req, res) => {
   try {
@@ -57,4 +57,4 @@ const addRole = async (req, res) => {
   }
 };
 
-module.exports = { addRole };
+export default addRole;

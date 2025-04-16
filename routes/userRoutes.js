@@ -1,7 +1,9 @@
-const express = require("express");
+import express from "express";
+import { setPassword } from "../controllers/userController.js";
+import * as userController from "../controllers/userController.js"
+import { protect } from "../middleware/authMiddleware";
+
 const router = express.Router();
-const userController = require("../controllers/userController");
-const { setPassword } = require("../controllers/userController");
 
 const asyncHandler = (fn) => (req, res, next) => {
   Promise.resolve(fn(req, res, next)).catch(next);
@@ -15,5 +17,8 @@ router.post("/reset-password", asyncHandler(userController.resetPassword));
 router.post("/set-password", asyncHandler(userController.setPassword));
 router.post("/refresh-token", asyncHandler(userController.refreshToken));
 router.post("/logout-user", asyncHandler(userController.logoutUser));
+router.get("/profile", protect, getUserProfile);
+router.put("/profile", protect, updateUserProfile);
 
-module.exports = router;
+
+export default router;

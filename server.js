@@ -1,9 +1,10 @@
-const express = require("express");
-const cors = require("cors");
-const mongoose = require("mongoose");
-const userRoutes = require("./routes/userRoutes");
-const roleRoutes = require("./routes/roleRoutes");
-const permissionRoutes = require("./routes/permissionRoutes");
+import express from "express";
+import cors from "cors";
+import mongoose from "mongoose";
+
+import userRoutes from "./routes/userRoutes.js";
+import roleRoutes from "./routes/roleRoutes.js";
+import permissionRoutes from "./routes/permissionRoutes.js";
 
 const app = express();
 const PORT = process.env.PORT || 10000;

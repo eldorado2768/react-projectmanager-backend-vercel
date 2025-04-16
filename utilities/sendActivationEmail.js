@@ -1,4 +1,4 @@
-const nodemailer = require("nodemailer");
+import nodemailer from "nodemailer";
 
 const sendActivationEmail = async (email, accessCode) => {
   //Construct the activation link
@@ -36,4 +36,4 @@ const sendActivationEmail = async (email, accessCode) => {
   }
 };
 
-module.exports = sendActivationEmail;
+export default sendResetPasswordEmail;

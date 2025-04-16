@@ -1,4 +1,4 @@
-const nodemailer = require("nodemailer");
+import nodemailer from "nodemailer";
 
 const sendResetPasswordEmail = async (recipientEmail, resetLink) => {
   try {
@@ -30,4 +30,4 @@ const sendResetPasswordEmail = async (recipientEmail, resetLink) => {
   }
 };
 
-module.exports = sendResetPasswordEmail;
+export default sendResetPasswordEmail ;

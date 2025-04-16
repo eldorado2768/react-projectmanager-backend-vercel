@@ -1,7 +1,11 @@
-const express = require("express");
+import express from "express";
+import roleController from "../controllers/roleController";
+import authMiddleware from "../middleware/authMiddleware"; 
+
 const router = express.Router();
-const roleController = require("../controllers/roleController");
-const authMiddleware = require("../middleware/authMiddleware"); // Middleware for authentication
+
+
+
 
 const rolesRequired = (roles) => (req, res, next) => {
   // Check if the user has one of the required roles
@@ -34,4 +38,4 @@ router.post(
 // Delete an existing role (superadmin only)
 //router.delete("/:id", authMiddleware, rolesRequired(["superadmin"]), roleController.deleteRole);
 
-module.exports = router;
+export default router;

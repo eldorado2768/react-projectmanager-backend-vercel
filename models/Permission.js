@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 /*User types:
 superadmin: CRUD access for all tables
@@ -14,4 +14,4 @@ const permissionSchema = new mongoose.Schema({
   lastUpdated: { type: Date, default: Date.now },
 });
 
-module.exports = mongoose.model("Permission", permissionSchema);
+export default mongoose.model("Permission", permissionSchema);
