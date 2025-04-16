@@ -223,7 +223,7 @@ export const loginUser = async (req, res) => {
 };
 
 //user requests a new token
-const refreshToken = async (req, res) => {
+export const refreshToken = async (req, res) => {
   try {
     const { token } = req.body;
 
