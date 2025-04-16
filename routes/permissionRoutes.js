@@ -33,4 +33,4 @@ router.post(
 // Placeholder for deleting a permission (superadmin only)
 // router.delete("/:id", authMiddleware, rolesRequired(["superadmin"]), permissionController.deletePermission);
 
-export {router};
+export default router;

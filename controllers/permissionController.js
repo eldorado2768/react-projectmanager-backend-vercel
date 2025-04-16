@@ -49,4 +49,4 @@ const addPermission = async (req, res) => {
   }
 };
 
-export {addPermission};
+export default addPermission;

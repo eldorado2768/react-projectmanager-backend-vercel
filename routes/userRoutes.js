@@ -20,4 +20,4 @@ router.post("/logout-user", asyncHandler(userController.logoutUser));
 router.get("/profile", protect, getUserProfile);
 router.put("/profile", protect, updateUserProfile);
 
-export {router};
+export default router;

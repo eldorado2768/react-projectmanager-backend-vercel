@@ -33,4 +33,4 @@ router.post(
 // Delete an existing role (superadmin only)
 //router.delete("/:id", authMiddleware, rolesRequired(["superadmin"]), roleController.deleteRole);
 
-export {router};
+export default router;

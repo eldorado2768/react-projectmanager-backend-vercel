@@ -30,4 +30,4 @@ const sendResetPasswordEmail = async (recipientEmail, resetLink) => {
   }
 };
 
-export {sendResetPasswordEmail};
+export default sendResetPasswordEmail;
