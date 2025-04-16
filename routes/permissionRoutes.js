@@ -21,7 +21,7 @@ router.post(
   "/add-permission",
   protect,
   rolesRequired(["superadmin"]),
-  asyncHandler(permissionController.addPermission)
+  asyncHandler(addPermission)
 );
 
 // Placeholder for retrieving permissions (admin and superadmin)
