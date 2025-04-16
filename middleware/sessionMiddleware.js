@@ -45,4 +45,4 @@ const checkSessionActivity = async (req, res, next) => {
   }
 };
 
-export default checkSessionActivity;
+export {checkSessionActivity};

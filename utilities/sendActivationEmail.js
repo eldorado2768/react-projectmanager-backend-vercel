@@ -36,4 +36,4 @@ const sendActivationEmail = async (email, accessCode) => {
   }
 };
 
-export default sendResetPasswordEmail;
+export {sendResetPasswordEmail};
