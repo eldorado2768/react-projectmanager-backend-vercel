@@ -1,5 +1,5 @@
 import express from "express";
-import roleController from "../controllers/roleController.js";
+import addRole from "../controllers/roleController.js";
 import protect from "../middleware/protect.js";
 
 const router = express.Router();
