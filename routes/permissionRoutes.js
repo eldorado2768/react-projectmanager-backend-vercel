@@ -1,6 +1,7 @@
 import express from "express";
-import permissionController from "../controllers/permissionController.js"; // Fixed variable name
+import addPermission from "../controllers/permissionController.js"; // Fixed variable name
 import protect from "../middleware/protect.js"; // Middleware for authentication
+import asyncHandler from "../middleware/asyncHandler.js";
 
 const router = express.Router();
 
@@ -16,12 +17,11 @@ const rolesRequired = (roles) => (req, res, next) => {
   next();
 };
 
-// Route to add a new permission (superadmin only)
 router.post(
   "/add-permission",
   protect,
   rolesRequired(["superadmin"]),
-  permissionController.addPermission
+  asyncHandler(permissionController.addPermission)
 );
 
 // Placeholder for retrieving permissions (admin and superadmin)
