@@ -19,7 +19,7 @@ const rolesRequired = (roles) => (req, res, next) => {
 // Route to add a new permission (superadmin only)
 router.post(
   "/add-permission",
-  authMiddleware,
+  protect,
   rolesRequired(["superadmin"]),
   permissionController.addPermission
 );
