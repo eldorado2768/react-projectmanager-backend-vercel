@@ -137,8 +137,6 @@ const setPassword = async (req, res) => {
   }
 };
 
-module.exports = { setPassword };
-
 /*Login an existing user*/
 const loginUser = async (req, res) => {
   //Establish the different routes for different roles
