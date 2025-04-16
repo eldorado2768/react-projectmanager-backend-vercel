@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 
-const authMiddleware = (req, res, next) => {
+const protect = (req, res, next) => {
   const authHeader = req.headers.authorization;
 
   if (authHeader) {
@@ -16,19 +16,6 @@ const authMiddleware = (req, res, next) => {
     });
   } else {
     res.sendStatus(401); // Unauthorized
-  }
-};
-
-// Get User Profile
-export const getUserProfile = async (req, res) => {
-  try {
-    const user = await User.findById(req.user.id).select("-password");
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-    res.json(user);
-  } catch (error) {
-    res.status(500).json({ message: "Server error" });
   }
 };
 

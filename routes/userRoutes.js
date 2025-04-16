@@ -1,7 +1,7 @@
 import express from "express";
 import { setPassword } from "../controllers/userController.js";
-import * as userController from "../controllers/userController.js"
-import {protect} from "../middleware/authMiddleware.js";
+import * as userController from "../controllers/userController.js";
+import {protect} from "../middleware/protect.js";
 
 const router = express.Router();
 
@@ -19,6 +19,5 @@ router.post("/refresh-token", asyncHandler(userController.refreshToken));
 router.post("/logout-user", asyncHandler(userController.logoutUser));
 router.get("/profile", protect, getUserProfile);
 router.put("/profile", protect, updateUserProfile);
-
 
 export default router;
