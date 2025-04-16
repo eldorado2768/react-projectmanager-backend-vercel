@@ -1,5 +1,4 @@
 import express from "express";
-import { setPassword } from "../controllers/userController.js";
 import * as userController from "../controllers/userController.js";
 import protect from "../middleware/protect.js";
 
@@ -17,7 +16,7 @@ router.post("/reset-password", asyncHandler(userController.resetPassword));
 router.post("/set-password", asyncHandler(userController.setPassword));
 router.post("/refresh-token", asyncHandler(userController.refreshToken));
 router.post("/logout-user", asyncHandler(userController.logoutUser));
-router.get("/profile", protect, getUserProfile);
-router.put("/profile", protect, updateUserProfile);
+router.get("/profile", protect, asyncHandler(userController.getUserProfile));
+router.put("/profile", protect, asyncHandler(userController.updateUserProfile));
 
 export default router;
