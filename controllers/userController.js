@@ -1,5 +1,5 @@
 import User from "../models/User.js";
-import Session from "../models/Session";
+import Session from "../models/Session.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import sendActivationEmail from "../utilities/sendActivationEmail.js";
@@ -429,5 +429,3 @@ export {
   activateUser,
   logoutUser,
 };
-
-
