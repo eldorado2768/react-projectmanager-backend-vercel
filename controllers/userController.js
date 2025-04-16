@@ -8,7 +8,7 @@ import Role from "../models/Role.js";
 import crypto from "crypto";
 
 /*Registers a new user*/
-const registerUser = async (req, res) => {
+export const registerUser = async (req, res) => {
   try {
     const { firstName, lastName, email, roleId } = req.body;
 
@@ -73,7 +73,7 @@ const registerUser = async (req, res) => {
 };
 
 /*Activate a new user*/
-const activateUser = async (req, res) => {
+export const activateUser = async (req, res) => {
   const { email, accessCode } = req.body;
 
   try {
@@ -102,7 +102,7 @@ const activateUser = async (req, res) => {
 };
 
 /*Set password for a new activated user*/
-const setPassword = async (req, res) => {
+export const setPassword = async (req, res) => {
   try {
     const { email, password } = req.body;
 
@@ -138,7 +138,7 @@ const setPassword = async (req, res) => {
 };
 
 /*Login an existing user*/
-const loginUser = async (req, res) => {
+export const loginUser = async (req, res) => {
   //Establish the different routes for different roles
   const roleRedirects = {
     superadmin: "/superadmin",
@@ -254,7 +254,7 @@ const refreshToken = async (req, res) => {
 
 //user logouts of system
 
-const logoutUser = async (req, res) => {
+export const logoutUser = async (req, res) => {
   try {
     const receivedSessionID = req.headers["x-session-id"]; // Retrieve session ID from headers
 
@@ -286,7 +286,7 @@ const logoutUser = async (req, res) => {
 };
 
 /*User forgets password*/
-const forgotPassword = async (req, res) => {
+export const forgotPassword = async (req, res) => {
   try {
     const { email } = req.body;
 
@@ -337,7 +337,7 @@ const isValidPassword = (password) => {
   return passwordRegex.test(password) && password.length >= 8;
 };
 
-const resetPassword = async (req, res) => {
+export const resetPassword = async (req, res) => {
   try {
     const { token, password } = req.body;
     console.log("Received token:", token);
@@ -415,14 +415,4 @@ export const updateUserProfile = async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: "Server error" });
   }
-};
-
-export {
-  registerUser,
-  setPassword,
-  loginUser,
-  forgotPassword,
-  resetPassword,
-  activateUser,
-  logoutUser,
 };
