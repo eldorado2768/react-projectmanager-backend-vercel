@@ -139,6 +139,7 @@ export const setPassword = async (req, res) => {
 
 /*Login an existing user*/
 export const loginUser = async (req, res) => {
+  console.log("Login user function called from front end LoginUser");
   //Establish the different routes for different roles
   const roleRedirects = {
     superadmin: "/superadmin",
