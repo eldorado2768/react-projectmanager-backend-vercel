@@ -19,7 +19,7 @@ const rolesRequired = (roles) => (req, res, next) => {
 // Route to add a new role (superadmin only)
 router.post(
   "/add-role",
-  authMiddleware,
+  protect,
   rolesRequired(["superadmin"]),
   roleController.addRole
 );
