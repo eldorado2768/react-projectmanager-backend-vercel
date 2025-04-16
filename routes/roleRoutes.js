@@ -1,6 +1,7 @@
 import express from "express";
 import addRole from "../controllers/roleController.js";
 import protect from "../middleware/protect.js";
+import asyncHandler from "../middleware/asyncHandler.js";
 
 const router = express.Router();
 
