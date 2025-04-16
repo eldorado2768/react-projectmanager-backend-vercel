@@ -425,4 +425,6 @@ export {
   resetPassword,
   activateUser,
   logoutUser,
+  getUserProfile,
+  updateUserProfile,
 };
