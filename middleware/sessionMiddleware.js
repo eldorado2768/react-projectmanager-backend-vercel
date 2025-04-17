@@ -20,7 +20,7 @@ const checkSessionActivity = async (req, res, next) => {
     if (inactivityPeriod > 60 * 60 * 1000) {
       // 1 hour of inactivity
       // Invalidate session by deleting it from the database
-      await db.collection("Sessions").deleteOne({ sessionID });
+      await db.collection("Sessions").deleteOne({ sessionId });
       return res
         .status(401)
         .json({ message: "Session expired due to inactivity." });
