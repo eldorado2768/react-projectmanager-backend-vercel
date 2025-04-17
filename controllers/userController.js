@@ -196,13 +196,6 @@ export const loginUser = async (req, res) => {
     // Generate sessionID
     const sessionId = crypto.randomBytes(20).toString("hex");
 
-    console.log("Session Data Before Insert:", {
-      sessionId: sessionId,
-      token: accessToken,
-      lastActivity: Date.now(),
-      expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000),
-    });
-
     const newSession = new Session({
       sessionId: sessionId,
       token: accessToken,
@@ -210,6 +203,7 @@ export const loginUser = async (req, res) => {
       expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000), // Expires in 24 hours
     });
 
+    console.log("Final Session Before Save:", newSession);
     // Store session info in the database
     await newSession.save();
 
