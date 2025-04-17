@@ -20,11 +20,23 @@ const allowedOrigins = [
   "https://react-projectmanager.vercel.app",
   "https://react-projectmanager-git-master-david-brotmans-projects.vercel.app",
 ];
+
 app.use(
   cors({
     origin: allowedOrigins,
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE", // Allow all necessary request methods
+    allowedHeaders: [
+      "Origin",
+      "X-Requested-With",
+      "Content-Type",
+      "Accept",
+      "Authorization",
+    ],
+    credentials: true, // Required if using authentication headers
   })
 );
+
+app.options("*", cors());
 
 // Middleware to parse JSON requests
 app.use(express.json());
