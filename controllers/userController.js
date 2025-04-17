@@ -150,9 +150,6 @@ export const loginUser = async (req, res) => {
   const receivedUsername = req.body.username.trim();
   const receivedPassword = req.body.password.trim();
 
-  console.log("Received Username:", receivedUsername);
-  console.log("Received Password:", receivedPassword);
-
   try {
     // Query user with populated role
     const user = await User.findOne({ username: receivedUsername })
@@ -198,6 +195,8 @@ export const loginUser = async (req, res) => {
 
     // Generate sessionID
     const sessionId = crypto.randomBytes(20).toString("hex");
+
+    console.log("Generated Session ID:", sessionId);
 
     const newSession = new Session({
       sessionId: sessionId,
