@@ -196,7 +196,12 @@ export const loginUser = async (req, res) => {
     // Generate sessionID
     const sessionId = crypto.randomBytes(20).toString("hex");
 
-    console.log("Generated Session ID:", sessionId);
+    console.log("Session Data Before Insert:", {
+      sessionId: sessionId,
+      token: accessToken,
+      lastActivity: Date.now(),
+      expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000),
+    });
 
     const newSession = new Session({
       sessionId: sessionId,
