@@ -258,11 +258,11 @@ export const refreshToken = async (req, res) => {
 
 export const logoutUser = async (req, res) => {
   try {
-    const receivedSessionID = req.headers["x-session-id"]; // Retrieve session ID from headers
+    const receivedSessionId = req.headers["x-session-id"]; // Retrieve session ID from headers
 
     // Validate session ID exists
-    if (!receivedSessionID) {
-      return res.status(400).json({ message: "Session ID is missing" });
+    if (!receivedSessionId) {
+      return res.status(400).json({ message: "Session Id is missing" });
     }
 
     // Locate the session in the database
