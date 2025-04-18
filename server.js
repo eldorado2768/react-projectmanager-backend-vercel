@@ -5,6 +5,10 @@ import mongoose from "mongoose";
 import userRoutes from "./routes/userRoutes.js";
 import roleRoutes from "./routes/roleRoutes.js";
 import permissionRoutes from "./routes/permissionRoutes.js";
+import Session from "./models/SessionModel.js";
+// Cleanup any previous broken sessions with null sessionId
+await Session.deleteMany({ sessionId: null });
+console.log("Deleted all sessions with null sessionId.");
 
 const app = express();
 const PORT = process.env.PORT || 10000;
@@ -65,6 +69,9 @@ app.use((err, req, res, next) => {
     .status(err.status || 500)
     .json({ message: err.message || "Internal server error" });
 });
+
+await Session.deleteMany({ sessionId: null });
+console.log("Deleted all sessions with null sessionId.");
 
 // Start the Server
 app.listen(PORT, () => {
