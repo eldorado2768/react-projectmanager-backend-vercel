@@ -5,10 +5,6 @@ import mongoose from "mongoose";
 import userRoutes from "./routes/userRoutes.js";
 import roleRoutes from "./routes/roleRoutes.js";
 import permissionRoutes from "./routes/permissionRoutes.js";
-import Session from "./models/Session.js";
-// Cleanup any previous broken sessions with null sessionId
-await Session.deleteMany({ sessionId: null });
-console.log("Deleted all sessions with null sessionId.");
 
 const app = express();
 const PORT = process.env.PORT || 10000;

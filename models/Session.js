@@ -5,6 +5,7 @@ const sessionSchema = new mongoose.Schema({
     type: String,
     required: true,
     unique: true,
+    default: () => crypto.randomBytes(20).toString("hex"), //Ensure no null value
   },
   token: {
     type: String,
