@@ -50,11 +50,6 @@ mongoose
     process.exit(1);
   });
 
-// Test Route
-app.get("/test", (req, res) => {
-  res.send("Hello from the backend!");
-});
-
 // Use Modular Routes
 app.use("/api/users", userRoutes);
 app.use("/api/roles", roleRoutes);

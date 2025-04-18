@@ -193,7 +193,7 @@ export const loginUser = async (req, res) => {
       { expiresIn: "7d" } // Example: valid for 7 days
     );
 
-    // Generate sessionID
+    // Generate sessionId
     const sessionId = crypto.randomBytes(20).toString("hex");
     console.log("Generated Session ID:", sessionId); // Right after generating
 
@@ -267,17 +267,17 @@ export const logoutUser = async (req, res) => {
 
     // Locate the session in the database
     const session = await Session.findOne({
-      sessionID: receivedSessionID,
+      sessionId: receivedSessionId,
     }).lean();
     if (!session) {
       return res.status(401).json({ message: "Invalid session" });
     }
 
     // Delete the session from the database
-    await Session.deleteOne({ sessionID: receivedSessionID });
+    await Session.deleteOne({ sessionId: receivedSessionId });
 
     // (Optional) Log the operation for auditing/debugging
-    console.log(`Session ${receivedSessionID} successfully deleted`);
+    console.log(`Session ${receivedSessionId} successfully deleted`);
 
     // Respond to the client
     res.status(200).json({ message: "Logout successful" });

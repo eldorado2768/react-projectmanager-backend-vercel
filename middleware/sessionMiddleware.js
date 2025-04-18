@@ -1,13 +1,13 @@
 const checkSessionActivity = async (req, res, next) => {
-  const sessionID = req.headers["x-session-id"]; // Expect sessionID in the headers
+  const sessionId = req.headers["x-session-id"]; // Expect sessionId in the headers
 
-  if (!sessionID) {
+  if (!sessionId) {
     return res.status(401).json({ message: "Session ID required." });
   }
 
   try {
     // Retrieve session info from the database
-    const session = await db.collection("Sessions").findOne({ sessionID });
+    const session = await db.collection("Sessions").findOne({ sessionId });
 
     if (!session) {
       return res.status(401).json({
@@ -31,7 +31,7 @@ const checkSessionActivity = async (req, res, next) => {
     await db
       .collection("Sessions")
       .updateOne(
-        { sessionID },
+        { sessionId },
         { $set: { lastActivity: session.lastActivity } }
       );
 
