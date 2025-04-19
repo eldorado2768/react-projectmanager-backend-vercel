@@ -279,6 +279,8 @@ export const logoutUser = async (req, res) => {
   try {
     const receivedSessionId = req.headers["x-session-id"]; // Retrieve session ID from headers
 
+    console.log("ReceivedsessionId upon logout :", receivedSessionId);
+
     // Validate session ID exists
     if (!receivedSessionId) {
       return res.status(400).json({ message: "Session Id is missing" });
@@ -291,7 +293,7 @@ export const logoutUser = async (req, res) => {
     if (!session) {
       return res.status(401).json({ message: "Invalid session" });
     }
-
+    console.log("Session found before deletion:", session);
     // Delete the session from the database
     await Session.deleteOne({ sessionId: receivedSessionId });
 
