@@ -31,6 +31,7 @@ app.use(
       "Content-Type",
       "Accept",
       "Authorization",
+      "x-session-id",
     ],
     credentials: true, // Required if using authentication headers
   })
