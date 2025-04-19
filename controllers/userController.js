@@ -139,16 +139,16 @@ export const setPassword = async (req, res) => {
 
 /*Login an existing user*/
 export const loginUser = async (req, res) => {
-  //Establish the different routes for different roles
+  // Establish the different routes for different roles
   const roleRedirects = {
     superadmin: "/superadmin",
     admin: "/admin",
     user: "/index",
-    // Add more roles as needed
   };
 
   const receivedUsername = req.body.username.trim();
   const receivedPassword = req.body.password.trim();
+  const receivedSessionId = req.headers["x-session-id"]; // Retrieve sessionId from headers
 
   try {
     // Query user with populated role
@@ -156,12 +156,12 @@ export const loginUser = async (req, res) => {
       .populate("roleId")
       .lean();
 
-    //Validate user existence
+    // Validate user existence
     if (!user) {
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
-    //Ensure roleID and corresponding roleName exist
+    // Ensure roleID and corresponding roleName exist
     if (!user.roleId || !user.roleId.roleName) {
       return res
         .status(500)
@@ -170,48 +170,67 @@ export const loginUser = async (req, res) => {
 
     const roleName = user.roleId.roleName;
 
-    //Compare password received to database password
-    const databasePassword = user.password.trim();
+    // Compare password received to database password
     const passwordMatch = await bcrypt.compare(
       receivedPassword,
-      databasePassword
+      user.password.trim()
     );
 
     if (!passwordMatch) {
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
-    // Generate access token (short-lived)
+    // **Step 1: Check if session already exists**
+    if (receivedSessionId) {
+      const existingSession = await Session.findOne({
+        sessionId: receivedSessionId,
+      });
+
+      if (existingSession) {
+        console.log(
+          "Existing session found, reusing session:",
+          existingSession
+        );
+
+        //Update the expiration date of the existing session
+        existingSession.expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000);
+        await existingSession.save(); // Save updated expiration
+
+        return res.status(200).json({
+          redirectUrl: roleRedirects[roleName] || "/login",
+          sessionId: receivedSessionId,
+          roleName,
+          accessToken: existingSession.token, // Use the existing token
+          refreshToken: existingSession.refreshToken, // If stored in the session
+          message: "Session active, redirecting.",
+        });
+      }
+    }
+
+    // **Step 2: Create a new session if no valid one exists**
+    const sessionId = crypto.randomBytes(20).toString("hex");
     const accessToken = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
       expiresIn: "1h",
     });
-
-    // Generate refresh token (long-lived)
     const refreshToken = jwt.sign(
       { userId: user._id },
-      process.env.REFRESH_TOKEN_SECRET, // Use a separate secret for refresh tokens
-      { expiresIn: "7d" } // Example: valid for 7 days
+      process.env.REFRESH_TOKEN_SECRET,
+      { expiresIn: "7d" }
     );
 
-    // Generate sessionId
-    const sessionId = crypto.randomBytes(20).toString("hex");
-    console.log("Generated Session ID:", sessionId); // Right after generating
-
     const newSession = new Session({
-      sessionId: sessionId,
+      sessionId,
       token: accessToken,
       lastActivity: Date.now(),
-      expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000), // Expires in 24 hours
+      expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000),
     });
 
-    console.log("Session ID inside new Session object:", newSession.sessionId); // Right before saving
-    // Store session info in the database
     await newSession.save();
+    console.log("New session created:", newSession);
 
     // Redirect Based on User Role
-    const redirectUrl = roleRedirects[roleName] || "/login"; // Default to login if role is undefined
     return res.status(200).json({
-      redirectUrl,
+      redirectUrl: roleRedirects[roleName] || "/login",
       sessionId,
       roleName,
       accessToken,
