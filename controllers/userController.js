@@ -225,6 +225,9 @@ export const loginUser = async (req, res) => {
       expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000),
     });
 
+    //Save sessionId in local storage
+    localStorage.setItem("sessionId", sessionId);
+
     await newSession.save();
     console.log("New session created:", newSession);
 
