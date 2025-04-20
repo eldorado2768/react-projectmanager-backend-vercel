@@ -188,7 +188,7 @@ export const loginUser = async (req, res) => {
       expiresIn: "1h",
     });
 
-        const refreshToken = jwt.sign(
+    const refreshToken = jwt.sign(
       { userId: user._id },
       process.env.REFRESH_TOKEN_SECRET,
       { expiresIn: "7d" }
@@ -213,7 +213,6 @@ export const loginUser = async (req, res) => {
       refreshToken,
       message: "Login successful",
     });
-    
   } catch (error) {
     console.error("Error in loginUser:", error);
     res.status(500).json({ message: "Internal server error" });
@@ -385,7 +384,7 @@ export const resetPassword = async (req, res) => {
 };
 
 // Get User Profile
-const getUserProfile = async (req, res) => {
+export const getUserProfile = async (req, res) => {
   try {
     const user = await User.findById(req.userId).select("-password"); // ✅ Exclude sensitive data
 
@@ -393,7 +392,7 @@ const getUserProfile = async (req, res) => {
       return res.status(404).json({ error: "User not found." }); // ✅ Proper error handling
     }
 
-    res.status(200).json({ 
+    res.status(200).json({
       userId: user._id,
       roleName: user.roleName,
       email: user.email,
