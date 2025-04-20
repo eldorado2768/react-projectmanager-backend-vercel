@@ -385,15 +385,22 @@ export const resetPassword = async (req, res) => {
 };
 
 // Get User Profile
-export const getUserProfile = async (req, res) => {
+const getUserProfile = async (req, res) => {
   try {
-    const user = await User.findById(req.user.id).select("-password");
+    const user = await User.findById(req.userId).select("-password"); // ✅ Exclude sensitive data
+
     if (!user) {
-      return res.status(404).json({ message: "User not found" });
+      return res.status(404).json({ error: "User not found." }); // ✅ Proper error handling
     }
-    res.json(user);
+
+    res.status(200).json({ 
+      userId: user._id,
+      roleName: user.roleName,
+      email: user.email,
+    });
   } catch (error) {
-    res.status(500).json({ message: "Server error" });
+    console.error("Error fetching profile:", error);
+    res.status(500).json({ error: "Failed to retrieve user profile." }); // ✅ Ensure JSON response
   }
 };
 
