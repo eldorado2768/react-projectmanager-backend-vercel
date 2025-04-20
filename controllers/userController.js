@@ -385,6 +385,10 @@ export const resetPassword = async (req, res) => {
 
 // Get User Profile
 export const getUserProfile = async (req, res) => {
+  console.log("✅ Received request for user profile"); // Debugging check
+  console.log("Request headers:", req.headers);
+  console.log("Request userId:", req.userId);
+
   try {
     const user = await User.findById(req.userId).select("-password"); // ✅ Exclude sensitive data
 
