@@ -208,6 +208,7 @@ export const loginUser = async (req, res) => {
     return res.status(200).json({
       redirectUrl: roleRedirects[roleName] || "/login",
       sessionId,
+      userId,
       roleName,
       accessToken,
       refreshToken,
