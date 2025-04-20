@@ -180,34 +180,54 @@ export const loginUser = async (req, res) => {
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
-    // **Step 1: Check if session already exists**
-    if (receivedSessionId) {
-      const existingSession = await Session.findOne({
-        sessionId: receivedSessionId,
-      });
+    let session; // Placeholder for session logic
 
-      if (existingSession) {
+    // **Step 1: Check if session already exists in headers**
+    if (receivedSessionId) {
+      session = await Session.findOne({ sessionId: receivedSessionId });
+
+      if (session) {
         console.log(
-          "Existing session found, reusing session:",
-          existingSession
+          "Existing session found via headers, reusing session:",
+          session
         );
 
-        //Update the expiration date of the existing session
-        existingSession.expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000);
-        await existingSession.save(); // Save updated expiration
+        // Update expiration upon reuse
+        session.expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000);
+        await session.save();
 
         return res.status(200).json({
           redirectUrl: roleRedirects[roleName] || "/login",
           sessionId: receivedSessionId,
           roleName,
-          accessToken: existingSession.token, // Use the existing token
-          refreshToken: existingSession.refreshToken, // If stored in the session
+          accessToken: session.token,
+          refreshToken: session.refreshToken,
           message: "Session active, redirecting.",
         });
       }
     }
 
-    // **Step 2: Create a new session if no valid one exists**
+    // **Step 2: Check database for an existing session tied to userId**
+    session = await Session.findOne({ userId: user._id });
+
+    if (session) {
+      console.log("Existing session found in DB, reusing session:", session);
+
+      // Update expiration upon reuse
+      session.expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000);
+      await session.save();
+
+      return res.status(200).json({
+        redirectUrl: roleRedirects[roleName] || "/login",
+        sessionId: session.sessionId,
+        roleName,
+        accessToken: session.token,
+        refreshToken: session.refreshToken,
+        message: "Session active, redirecting.",
+      });
+    }
+
+    // **Step 3: Create a new session if no valid one exists**
     const sessionId = crypto.randomBytes(20).toString("hex");
     const accessToken = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
       expiresIn: "1h",
@@ -218,15 +238,16 @@ export const loginUser = async (req, res) => {
       { expiresIn: "7d" }
     );
 
-    const newSession = new Session({
+    session = new Session({
       sessionId,
+      userId: user._id, // ✅ Store userId in session
       token: accessToken,
       lastActivity: Date.now(),
       expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000),
     });
 
-    await newSession.save();
-    console.log("New session created:", newSession);
+    await session.save();
+    console.log("New session created:", session);
 
     // Redirect Based on User Role
     return res.status(200).json({

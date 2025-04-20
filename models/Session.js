@@ -11,6 +11,12 @@ const sessionSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  userId: {
+    // ✅ Add userId to track which user owns the session
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
+  },
   lastActivity: {
     type: Date,
     required: true,
