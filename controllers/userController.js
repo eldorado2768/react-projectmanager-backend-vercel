@@ -188,8 +188,7 @@ export const loginUser = async (req, res) => {
       expiresIn: "1h",
     });
 
-    console.log("The new accessToken is :", accessToken); //debugging purposes
-    const refreshToken = jwt.sign(
+        const refreshToken = jwt.sign(
       { userId: user._id },
       process.env.REFRESH_TOKEN_SECRET,
       { expiresIn: "7d" }
@@ -214,7 +213,7 @@ export const loginUser = async (req, res) => {
       refreshToken,
       message: "Login successful",
     });
-    console.log("redirectUrl in backend:", redirectUrl);
+    
   } catch (error) {
     console.error("Error in loginUser:", error);
     res.status(500).json({ message: "Internal server error" });
