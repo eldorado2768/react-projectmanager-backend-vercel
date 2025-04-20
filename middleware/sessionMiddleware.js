@@ -1,5 +1,5 @@
 const checkSessionActivity = async (req, res, next) => {
-  const sessionId = req.headers["x-session-id"]; // Expect sessionId in the headers
+  const sessionId = req.headers["x-session-id"]; // Expect sessionId in headers
 
   if (!sessionId) {
     return res.status(401).json({ message: "Session ID required." });
@@ -19,7 +19,6 @@ const checkSessionActivity = async (req, res, next) => {
     const inactivityPeriod = Date.now() - session.lastActivity;
     if (inactivityPeriod > 60 * 60 * 1000) {
       // 1 hour of inactivity
-      // Invalidate session by deleting it from the database
       await db.collection("Sessions").deleteOne({ sessionId });
       return res
         .status(401)
@@ -35,8 +34,9 @@ const checkSessionActivity = async (req, res, next) => {
         { $set: { lastActivity: session.lastActivity } }
       );
 
-    // Attach session data to the request object for downstream use
+    // ✅ Attach session data to request (INCLUDING userId!)
     req.session = session;
+    req.userId = session.userId; // ✅ Ensure userId is available for downstream use
 
     next(); // Proceed to the next middleware or route handler
   } catch (error) {
@@ -44,5 +44,4 @@ const checkSessionActivity = async (req, res, next) => {
     return res.status(500).json({ message: "Internal server error." });
   }
 };
-
 export default checkSessionActivity;
