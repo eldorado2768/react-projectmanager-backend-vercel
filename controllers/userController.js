@@ -139,7 +139,7 @@ export const setPassword = async (req, res) => {
 
 /*Login an existing user*/
 export const loginUser = async (req, res) => {
-  // Establish the different routes for different roles
+  // Establish route redirects for different roles
   const roleRedirects = {
     superadmin: "/superadmin",
     admin: "/admin",
@@ -148,20 +148,17 @@ export const loginUser = async (req, res) => {
 
   const receivedUsername = req.body.username.trim();
   const receivedPassword = req.body.password.trim();
-  const receivedSessionId = req.headers["x-session-id"]; // Retrieve sessionId from headers
 
   try {
-    // Query user with populated role
+    // ✅ Step 1: Validate User Credentials
     const user = await User.findOne({ username: receivedUsername })
       .populate("roleId")
       .lean();
 
-    // Validate user existence
     if (!user) {
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
-    // Ensure roleID and corresponding roleName exist
     if (!user.roleId || !user.roleId.roleName) {
       return res
         .status(500)
@@ -170,7 +167,6 @@ export const loginUser = async (req, res) => {
 
     const roleName = user.roleId.roleName;
 
-    // Compare password received to database password
     const passwordMatch = await bcrypt.compare(
       receivedPassword,
       user.password.trim()
@@ -180,54 +176,13 @@ export const loginUser = async (req, res) => {
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
-    let session; // Placeholder for session logic
+    // ✅ Step 2: Enforce Single Active Session
+    await Session.deleteMany({ userId: user._id });
+    console.log(
+      `Removed previous sessions for user: ${user._id}, enforcing single login.`
+    );
 
-    // **Step 1: Check if session already exists in headers**
-    if (receivedSessionId) {
-      session = await Session.findOne({ sessionId: receivedSessionId });
-
-      if (session) {
-        console.log(
-          "Existing session found via headers, reusing session:",
-          session
-        );
-
-        // Update expiration upon reuse
-        session.expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000);
-        await session.save();
-
-        return res.status(200).json({
-          redirectUrl: roleRedirects[roleName] || "/login",
-          sessionId: receivedSessionId,
-          roleName,
-          accessToken: session.token,
-          refreshToken: session.refreshToken,
-          message: "Session active, redirecting.",
-        });
-      }
-    }
-
-    // **Step 2: Check database for an existing session tied to userId**
-    session = await Session.findOne({ userId: user._id });
-
-    if (session) {
-      console.log("Existing session found in DB, reusing session:", session);
-
-      // Update expiration upon reuse
-      session.expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000);
-      await session.save();
-
-      return res.status(200).json({
-        redirectUrl: roleRedirects[roleName] || "/login",
-        sessionId: session.sessionId,
-        roleName,
-        accessToken: session.token,
-        refreshToken: session.refreshToken,
-        message: "Session active, redirecting.",
-      });
-    }
-
-    // **Step 3: Create a new session if no valid one exists**
+    // ✅ Step 3: Create a New Session
     const sessionId = crypto.randomBytes(20).toString("hex");
     const accessToken = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
       expiresIn: "1h",
@@ -238,9 +193,9 @@ export const loginUser = async (req, res) => {
       { expiresIn: "7d" }
     );
 
-    session = new Session({
+    const session = new Session({
       sessionId,
-      userId: user._id, // ✅ Store userId in session
+      userId: user._id,
       token: accessToken,
       lastActivity: Date.now(),
       expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000),
@@ -249,7 +204,7 @@ export const loginUser = async (req, res) => {
     await session.save();
     console.log("New session created:", session);
 
-    // Redirect Based on User Role
+    // ✅ Step 4: Return Response to Frontend
     return res.status(200).json({
       redirectUrl: roleRedirects[roleName] || "/login",
       sessionId,
