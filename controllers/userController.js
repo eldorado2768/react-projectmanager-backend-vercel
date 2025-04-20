@@ -187,6 +187,8 @@ export const loginUser = async (req, res) => {
     const accessToken = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
       expiresIn: "1h",
     });
+
+    console.log("The new accessToken is :", accessToken); //debugging purposes
     const refreshToken = jwt.sign(
       { userId: user._id },
       process.env.REFRESH_TOKEN_SECRET,
