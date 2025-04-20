@@ -120,6 +120,7 @@ export const setPassword = async (req, res) => {
       return res.status(404).json({ message: "User not found." });
     }
 
+    const userId = user.user._Id;
     // Hash the new password
     const saltRounds = 10;
     const hashedPassword = await bcrypt.hash(password, saltRounds);
@@ -165,7 +166,9 @@ export const loginUser = async (req, res) => {
         .json({ message: "User role is not properly defined." });
     }
 
+    //Retrieve values from user record
     const roleName = user.roleId.roleName;
+    const userId = user.user._id;
 
     const passwordMatch = await bcrypt.compare(
       receivedPassword,
@@ -177,26 +180,26 @@ export const loginUser = async (req, res) => {
     }
 
     // ✅ Step 2: Enforce Single Active Session
-    await Session.deleteMany({ userId: user._id });
+    await Session.deleteMany({ userId: userId });
     console.log(
       `Removed previous sessions for user: ${user._id}, enforcing single login.`
     );
 
     // ✅ Step 3: Create a New Session
     const sessionId = crypto.randomBytes(20).toString("hex");
-    const accessToken = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
+    const accessToken = jwt.sign({ userId: userId }, process.env.JWT_SECRET, {
       expiresIn: "1h",
     });
 
     const refreshToken = jwt.sign(
-      { userId: user._id },
+      { userId: UserId },
       process.env.REFRESH_TOKEN_SECRET,
       { expiresIn: "7d" }
     );
 
     const session = new Session({
       sessionId,
-      userId: user._id,
+      userId,
       accessToken: accessToken,
       lastActivity: Date.now(),
       expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000),
