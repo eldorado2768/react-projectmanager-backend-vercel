@@ -204,7 +204,6 @@ export const loginUser = async (req, res) => {
     });
 
     await session.save();
-    console.log("New session created:", session);
 
     // ✅ Step 4: Return Response to Frontend
     return res.status(200).json({
@@ -215,6 +214,7 @@ export const loginUser = async (req, res) => {
       refreshToken,
       message: "Login successful",
     });
+    console.log("redirectUrl in backend:", redirectUrl);
   } catch (error) {
     console.error("Error in loginUser:", error);
     res.status(500).json({ message: "Internal server error" });
