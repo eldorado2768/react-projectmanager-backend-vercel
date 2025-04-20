@@ -196,7 +196,7 @@ export const loginUser = async (req, res) => {
     const session = new Session({
       sessionId,
       userId: user._id,
-      token: accessToken,
+      accessToken: accessToken,
       lastActivity: Date.now(),
       expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000),
     });
