@@ -8,6 +8,7 @@ const checkSessionActivity = async (req, res, next) => {
   try {
     // Retrieve session info from the database
     const session = await db.collection("Sessions").findOne({ sessionId });
+        
 
     if (!session) {
       return res.status(401).json({

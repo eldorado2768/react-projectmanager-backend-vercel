@@ -16,7 +16,12 @@ router.post("/reset-password", asyncHandler(userController.resetPassword));
 router.post("/set-password", asyncHandler(userController.setPassword));
 router.post("/refresh-token", asyncHandler(userController.refreshToken));
 router.post("/logout-user", asyncHandler(userController.logoutUser));
-router.get("/profile", protect, asyncHandler(userController.getUserProfile));
+router.get(
+  "/profile",
+  protect,
+  checkSessionActivity,
+  asyncHandler(userController.getUserProfile)
+);
 router.put("/profile", protect, asyncHandler(userController.updateUserProfile));
 
 export default router;
