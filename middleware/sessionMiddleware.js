@@ -38,8 +38,6 @@ const checkSessionActivity = async (req, res, next) => {
     req.session = session;
     req.userId = session.userId; // ✅ Ensure userId is available for downstream use
 
-    console.log("userId in middleware value: ", session.userId);
-
     next(); // Proceed to the next middleware or route handler
   } catch (error) {
     console.error("Error validating session:", error);

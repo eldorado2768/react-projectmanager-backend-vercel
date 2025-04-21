@@ -169,6 +169,7 @@ export const loginUser = async (req, res) => {
     //Retrieve values from user record
     const roleName = user.roleId.roleName;
     const userId = user._id;
+    console.log("User ID upon login: ", userId);
 
     const passwordMatch = await bcrypt.compare(
       receivedPassword,
@@ -381,8 +382,6 @@ export const resetPassword = async (req, res) => {
 
 // Get User Profile
 export const getUserProfile = async (req, res) => {
-  console.log("✅ Received request for user profile"); // Debugging check
-  console.log("Request headers:", req.headers);
   console.log("Request userId:", req.userId);
 
   try {
