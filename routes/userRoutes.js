@@ -1,6 +1,7 @@
 import express from "express";
 import * as userController from "../controllers/userController.js";
 import protect from "../middleware/protect.js";
+import checkSessionActivity from "../middleware/sessionMiddleware.js";
 
 const router = express.Router();
 
