@@ -168,7 +168,7 @@ export const loginUser = async (req, res) => {
 
     //Retrieve values from user record
     const roleName = user.roleId.roleName;
-    const userId = user.user._id;
+    const userId = user._id;
 
     const passwordMatch = await bcrypt.compare(
       receivedPassword,
