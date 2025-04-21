@@ -18,9 +18,16 @@ const checkSessionActivity = async (req, res, next) => {
 
     // Check inactivity period
     const inactivityPeriod = Date.now() - session.lastActivity;
+    console.log("✅ Checking inactivity period:", inactivityPeriod);
+
     if (inactivityPeriod > 60 * 60 * 1000) {
+      console.log(
+        "🚨 User session inactive for too long. Attempting deletion..."
+      );
+
       // 1 hour of inactivity
       await db.collection("Sessions").deleteOne({ sessionId });
+      console.log("✅ Session successfully deleted from database.");
       return res
         .status(401)
         .json({ message: "Session expired due to inactivity." });
