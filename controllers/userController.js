@@ -181,9 +181,6 @@ export const loginUser = async (req, res) => {
 
     // ✅ Step 2: Enforce Single Active Session
     await Session.deleteMany({ userId: userId });
-    console.log(
-      `Removed previous sessions for user: ${user._id}, enforcing single login.`
-    );
 
     // ✅ Step 3: Create a New Session
     const sessionId = crypto.randomBytes(20).toString("hex");
@@ -259,8 +256,6 @@ export const logoutUser = async (req, res) => {
   try {
     const receivedSessionId = req.headers["x-session-id"]; // Retrieve session ID from headers
 
-    console.log("ReceivedsessionId upon logout :", receivedSessionId);
-
     // Validate session ID exists
     if (!receivedSessionId) {
       return res.status(400).json({ message: "Session Id is missing" });
@@ -273,12 +268,9 @@ export const logoutUser = async (req, res) => {
     if (!session) {
       return res.status(401).json({ message: "Invalid session" });
     }
-    console.log("Session found before deletion:", session);
+
     // Delete the session from the database
     await Session.deleteOne({ sessionId: receivedSessionId });
-
-    // (Optional) Log the operation for auditing/debugging
-    console.log(`Session ${receivedSessionId} successfully deleted`);
 
     // Respond to the client
     res.status(200).json({ message: "Logout successful" });
