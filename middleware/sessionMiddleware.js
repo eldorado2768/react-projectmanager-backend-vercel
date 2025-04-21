@@ -1,6 +1,7 @@
 const checkSessionActivity = async (req, res, next) => {
   const sessionId = req.headers["x-session-id"]; // Expect sessionId in headers
-  console.log("sessionId at top of checkSessionActivity:", sessionId);
+  console.log("✅ Incoming request headers:", req.headers);
+  console.log("✅ x-session-id received:", req.headers["x-session-id"]);
 
   if (!sessionId) {
     return res.status(401).json({ message: "Session ID required." });
