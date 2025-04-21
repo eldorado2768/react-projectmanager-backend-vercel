@@ -1,3 +1,5 @@
+import Session from "../models/Session.js";
+
 const checkSessionActivity = async (req, res, next) => {
   console.log("✅ Incoming request headers:", req.headers);
   console.log("✅ x-session-id received:", req.headers["x-session-id"]);
