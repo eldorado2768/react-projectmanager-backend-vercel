@@ -391,6 +391,7 @@ export const getUserProfile = async (req, res) => {
     res.status(200).json({
       userId: userId,
       firstName: user.firstName,
+      username: user.username,
       lastName: user.lastName,
       roleName: user.roleName,
       email: user.email,
