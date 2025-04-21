@@ -335,7 +335,7 @@ const isValidPassword = (password) => {
 export const resetPassword = async (req, res) => {
   try {
     const { token, password } = req.body;
-    console.log("Received token:", token);
+    
 
     // Find the user by token and ensure it hasn't expired
     const user = await User.findOne({
@@ -371,7 +371,7 @@ export const resetPassword = async (req, res) => {
       console.error("Error saving user:", error);
     }
 
-    console.log("User updated successfully:", user.email);
+    
     res.status(200).json({ message: "Password reset successful" });
   } catch (error) {
     console.error("Error in resetPassword:", error);
@@ -382,7 +382,7 @@ export const resetPassword = async (req, res) => {
 // Get User Profile
 export const getUserProfile = async (req, res) => {
   const userId = req.userId;
-  console.log("Request userId:", userId);
+ 
 
   try {
     const user = await User.findById(userId).select("-password"); // ✅ Exclude sensitive data
