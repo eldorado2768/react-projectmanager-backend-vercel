@@ -168,7 +168,8 @@ export const loginUser = async (req, res) => {
 
     //Retrieve values from user record
     const roleName = user.roleId.roleName;
-    const userId = user._id;
+    const userId = user._id.toString(); //Convert object to a string before storing.
+
     console.log("User ID upon login: ", userId);
 
     const passwordMatch = await bcrypt.compare(
