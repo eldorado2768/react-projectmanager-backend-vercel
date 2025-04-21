@@ -189,7 +189,7 @@ export const loginUser = async (req, res) => {
     });
 
     const refreshToken = jwt.sign(
-      { userId: UserId },
+      { userId: userId },
       process.env.REFRESH_TOKEN_SECRET,
       { expiresIn: "7d" }
     );
