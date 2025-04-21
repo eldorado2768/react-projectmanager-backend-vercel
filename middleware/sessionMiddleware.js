@@ -1,5 +1,6 @@
 const checkSessionActivity = async (req, res, next) => {
   const sessionId = req.headers["x-session-id"]; // Expect sessionId in headers
+  console.log("checkSessionActivity is running for request:", req.url);
 
   if (!sessionId) {
     return res.status(401).json({ message: "Session ID required." });
@@ -8,7 +9,6 @@ const checkSessionActivity = async (req, res, next) => {
   try {
     // Retrieve session info from the database
     const session = await db.collection("Sessions").findOne({ sessionId });
-        
 
     if (!session) {
       return res.status(401).json({
