@@ -170,8 +170,6 @@ export const loginUser = async (req, res) => {
     const roleName = user.roleId.roleName;
     const userId = user._id.toString(); //Convert object to a string before storing.
 
-    console.log("User ID upon login: ", userId);
-
     const passwordMatch = await bcrypt.compare(
       receivedPassword,
       user.password.trim()
