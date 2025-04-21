@@ -381,17 +381,18 @@ export const resetPassword = async (req, res) => {
 
 // Get User Profile
 export const getUserProfile = async (req, res) => {
-  console.log("Request userId:", req.userId);
+  const userId = req.userId;
+  console.log("Request userId:", userId);
 
   try {
-    const user = await User.findById(req.userId).select("-password"); // ✅ Exclude sensitive data
+    const user = await User.findById(userId).select("-password"); // ✅ Exclude sensitive data
 
     if (!user) {
       return res.status(404).json({ error: "User not found." }); // ✅ Proper error handling
     }
 
     res.status(200).json({
-      userId: user._id,
+      userId: userId,
       roleName: user.roleName,
       email: user.email,
     });
