@@ -382,7 +382,10 @@ export const getUserProfile = async (req, res) => {
   const userId = req.userId;
 
   try {
-    const user = await User.findById(userId).select("-password"); // ✅ Exclude sensitive data
+  const user = await User.findById(req.userId)
+  .populate("roleId", "roleName") // ✅ Populate roleId with roleName from Role collection
+  .select("username firstName lastName email roleId"); // ✅ Ensure roleId is included
+
 
     if (!user) {
       return res.status(404).json({ error: "User not found." }); // ✅ Proper error handling
@@ -393,7 +396,8 @@ export const getUserProfile = async (req, res) => {
       firstName: user.firstName,
       username: user.username,
       lastName: user.lastName,
-      roleName: user.roleName,
+      roleName: user.roleId.roleName, 
+      roleId: user.roleId._id, 
       email: user.email,
     });
   } catch (error) {
