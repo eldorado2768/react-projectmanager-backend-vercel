@@ -10,7 +10,7 @@ const checkSessionActivity = async (req, res, next) => {
 
   try {
     // Retrieve session info from the database
-    const session = await db.collection("Sessions").findOne({ sessionId });
+    const session = await Session.findOne({ sessionId });
 
     if (!session) {
       return res.status(401).json({
@@ -28,7 +28,8 @@ const checkSessionActivity = async (req, res, next) => {
       );
 
       // 1 hour of inactivity
-      await db.collection("Sessions").deleteOne({ sessionId });
+      await Session.deleteOne({ sessionId });
+
       console.log("✅ Session successfully deleted from database.");
       return res
         .status(401)
@@ -37,12 +38,10 @@ const checkSessionActivity = async (req, res, next) => {
 
     // Update activity timestamp
     session.lastActivity = Date.now();
-    await db
-      .collection("Sessions")
-      .updateOne(
-        { sessionId },
-        { $set: { lastActivity: session.lastActivity } }
-      );
+    await Session.updateOne(
+      { sessionId },
+      { $set: { lastActivity: session.lastActivity } }
+    );
 
     // ✅ Attach session data to request (INCLUDING userId!)
     req.session = session;
