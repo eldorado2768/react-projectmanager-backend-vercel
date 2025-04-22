@@ -407,7 +407,7 @@ export const getUserProfile = async (req, res) => {
 
 // Update User Profile
 export const updateUserProfile = async (req, res) => {
-  const userId = req.userId;
+  const userId = req.body.userId;
   console.log("userId sent from front end: ", userId);
 
   try {
