@@ -382,10 +382,9 @@ export const getUserProfile = async (req, res) => {
   const userId = req.userId;
 
   try {
-  const user = await User.findById(req.userId)
-  .populate("roleId", "roleName") // ✅ Populate roleId with roleName from Role collection
-  .select("username firstName lastName email roleId"); // ✅ Ensure roleId is included
-
+    const user = await User.findById(req.userId)
+      .populate("roleId", "roleName") // ✅ Populate roleId with roleName from Role collection
+      .select("username firstName lastName email roleId"); // ✅ Ensure roleId is included
 
     if (!user) {
       return res.status(404).json({ error: "User not found." }); // ✅ Proper error handling
@@ -393,11 +392,11 @@ export const getUserProfile = async (req, res) => {
 
     res.status(200).json({
       userId: userId,
-      firstName: user.firstName,
       username: user.username,
+      firstName: user.firstName,
       lastName: user.lastName,
-      roleName: user.roleId.roleName, 
-      roleId: user.roleId._id, 
+      roleName: user.roleId.roleName,
+      roleId: user.roleId._id,
       email: user.email,
     });
   } catch (error) {
@@ -415,10 +414,10 @@ export const updateUserProfile = async (req, res) => {
     }
 
     // Update user fields
-    user.name = req.body.name || user.name;
+    user.username = req.body.username || user.username;
+    user.firstName = req.body.firstName || user.firstName;
+    user.lastName = req.body.lastName || user.lastName;
     user.email = req.body.email || user.email;
-    user.profilePicture = req.body.profilePicture || user.profilePicture;
-
     const updatedUser = await user.save();
     res.json(updatedUser);
   } catch (error) {
