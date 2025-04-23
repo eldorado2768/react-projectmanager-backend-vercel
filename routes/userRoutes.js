@@ -2,15 +2,13 @@ import express from "express";
 import * as userController from "../controllers/userController.js";
 import protect from "../middleware/protect.js";
 import checkSessionActivity from "../middleware/sessionMiddleware.js";
-import cookieParser from "cookie-parser";
+
 
 const router = express.Router();
 
 const asyncHandler = (fn) => (req, res, next) => {
   Promise.resolve(fn(req, res, next)).catch(next);
 };
-
-app.use(cookieParser());
 
 router.post("/activate-user", asyncHandler(userController.activateUser));
 router.post("/register-user", asyncHandler(userController.registerUser));

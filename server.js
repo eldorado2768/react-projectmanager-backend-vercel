@@ -5,6 +5,7 @@ import mongoose from "mongoose";
 import userRoutes from "./routes/userRoutes.js";
 import roleRoutes from "./routes/roleRoutes.js";
 import permissionRoutes from "./routes/permissionRoutes.js";
+import cookieParser from "cookie-parser";
 
 const app = express();
 const PORT = process.env.PORT || 10000;
@@ -20,6 +21,8 @@ const allowedOrigins = [
   "https://react-projectmanager.vercel.app",
   "https://react-projectmanager-git-master-david-brotmans-projects.vercel.app",
 ];
+
+app.use(cookieParser());
 
 app.use(
   cors({
