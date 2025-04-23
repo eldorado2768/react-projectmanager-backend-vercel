@@ -3,6 +3,8 @@ import jwt from "jsonwebtoken";
 const protect = (req, res, next) => {
   const token = req.cookies.authToken;
 
+  console.log("Cookies received in protect middleware:", req.cookies);
+
   if (!token) {
     return res.status(401).json({ message: "Authentication token required." }); // Unauthorized
   }
