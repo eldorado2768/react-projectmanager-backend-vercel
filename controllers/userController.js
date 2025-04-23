@@ -138,80 +138,77 @@ export const setPassword = async (req, res) => {
   }
 };
 
-/*Login an existing user*/
+// ✅ Helper Function: Create Session and Generate Tokens used in loginUser
+const createSession = async (userId, role) => {
+  const accessToken = jwt.sign(
+    { userId, role },
+    process.env.JWT_SECRET,
+    { expiresIn: "1h" } // Token expires in 1 hour
+  );
+
+  const refreshToken = jwt.sign(
+    { userId },
+    process.env.REFRESH_TOKEN_SECRET,
+    { expiresIn: "7d" } // Token expires in 7 days
+  );
+
+  const session = new Session({
+    userId,
+    accessToken,
+    refreshToken,
+    expiresAt: new Date(Date.now() + 3600 * 1000), // Expiration 1 hour
+  });
+
+  await session.save(); // Save session in the database
+  return { accessToken, refreshToken };
+};
+
+// ✅ Main Function: Login User
 export const loginUser = async (req, res) => {
-  // Establish route redirects for different roles
+  const { username, password } = req.body;
+
+  // Role-based redirects
   const roleRedirects = {
     superadmin: "/superadmin",
     admin: "/admin",
     user: "/index",
   };
 
-  const receivedUsername = req.body.username.trim();
-  const receivedPassword = req.body.password.trim();
-
   try {
-    // ✅ Step 1: Validate User Credentials
-    const user = await User.findOne({ username: receivedUsername })
-      .populate("roleId")
-      .lean();
-
+    // Step 1: Validate User Credentials
+    const user = await User.findOne({ username }).populate("roleId").lean();
     if (!user) {
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
     if (!user.roleId || !user.roleId.roleName) {
-      return res
-        .status(500)
-        .json({ message: "User role is not properly defined." });
+      return res.status(500).json({ message: "User role is not properly defined." });
     }
 
-    //Retrieve values from user record
-    const roleName = user.roleId.roleName;
-    const userId = user._id.toString(); //Convert object to a string before storing.
-
-    const passwordMatch = await bcrypt.compare(
-      receivedPassword,
-      user.password.trim()
-    );
-
+    const passwordMatch = await bcrypt.compare(password, user.password);
     if (!passwordMatch) {
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
-    // ✅ Step 2: Enforce Single Active Session
-    await Session.deleteMany({ userId: userId });
+    // Step 2: Enforce Single Active Session
+    await Session.deleteMany({ userId: user._id }); // Remove previous sessions
 
-    // ✅ Step 3: Create a New Session
-    const sessionId = crypto.randomBytes(20).toString("hex");
-    const accessToken = jwt.sign({ userId: userId }, process.env.JWT_SECRET, {
-      expiresIn: "1h",
+    // Step 3: Create New Session
+    const { accessToken, refreshToken } = await createSession(user._id, user.roleId.roleName);
+
+    // Step 4: Store Token in Cookie
+    res.cookie("authToken", accessToken, {
+      httpOnly: true, // Secure the cookie from JavaScript access
+      secure: process.env.NODE_ENV === "production", // Only over HTTPS in production
+      sameSite: "strict", // CSRF protection
+      maxAge: 3600 * 1000, // 1-hour expiration
     });
 
-    const refreshToken = jwt.sign(
-      { userId: userId },
-      process.env.REFRESH_TOKEN_SECRET,
-      { expiresIn: "7d" }
-    );
-
-    const session = new Session({
-      sessionId,
-      userId,
-      accessToken: accessToken,
-      lastActivity: Date.now(),
-      expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000),
-    });
-
-    await session.save();
-
-    // ✅ Step 4: Return Response to Frontend
+    // Step 5: Return Response to Frontend
     return res.status(200).json({
-      redirectUrl: roleRedirects[roleName] || "/login",
-      sessionId,
-      userId,
-      roleName,
-      accessToken,
-      refreshToken,
+      redirectUrl: roleRedirects[user.roleId.roleName] || "/login",
+      userId: user._id,
+      roleName: user.roleId.roleName,
       message: "Login successful",
     });
   } catch (error) {

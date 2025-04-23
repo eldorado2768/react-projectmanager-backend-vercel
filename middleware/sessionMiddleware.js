@@ -1,16 +1,19 @@
+import jwt from "jsonwebtoken";
 import Session from "../models/Session.js";
 
 const checkSessionActivity = async (req, res, next) => {
-  
-  const sessionId = req.headers["x-session-id"]; // Expect sessionId in headers
+  const token = req.cookies.authToken; // Get the authToken from cookies
 
-  if (!sessionId) {
-    return res.status(401).json({ message: "Session ID required." });
+  if (!token) {
+    return res.status(401).json({ message: "Authentication token required." });
   }
 
   try {
-    // Retrieve session info from the database
-    const session = await Session.findOne({ sessionId });
+    // Validate token using JWT
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    // Retrieve session from the database
+    const session = await Session.findOne({ accessToken: token });
 
     if (!session) {
       return res.status(401).json({
@@ -20,17 +23,14 @@ const checkSessionActivity = async (req, res, next) => {
 
     // Check inactivity period
     const inactivityPeriod = Date.now() - session.lastActivity;
-    
-
     if (inactivityPeriod > 60 * 60 * 1000) {
       console.log(
         "🚨 User session inactive for too long. Attempting deletion..."
       );
 
-      // 1 hour of inactivity
-      await Session.deleteOne({ sessionId });
+      // Delete session after 1 hour of inactivity
+      await Session.deleteOne({ accessToken: token });
 
-     
       return res
         .status(401)
         .json({ message: "Session expired due to inactivity." });
@@ -39,20 +39,19 @@ const checkSessionActivity = async (req, res, next) => {
     // Update activity timestamp
     session.lastActivity = Date.now();
     await Session.updateOne(
-      { sessionId },
+      { accessToken: token },
       { $set: { lastActivity: session.lastActivity } }
     );
 
     // ✅ Attach session data to request (INCLUDING userId!)
     req.session = session;
-    req.userId = session.userId; // ✅ Ensure userId is available for downstream use
-
-    
+    req.userId = decoded.userId; // Attach userId from decoded token
 
     next(); // Proceed to the next middleware or route handler
   } catch (error) {
     console.error("Error validating session:", error);
-    return res.status(500).json({ message: "Internal server error." });
+    return res.status(403).json({ message: "Invalid or expired token." });
   }
 };
+
 export default checkSessionActivity;

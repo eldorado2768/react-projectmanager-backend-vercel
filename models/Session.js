@@ -1,30 +1,11 @@
 import mongoose from "mongoose";
 
 const sessionSchema = new mongoose.Schema({
-  sessionId: {
-    type: String,
-    required: true,
-    unique: true,
-    default: () => crypto.randomBytes(20).toString("hex"), //Ensure no null value
-  },
-  accessToken: {
-    type: String,
-    required: true,
-  },
-  userId: {
-    // ✅ Add userId to track which user owns the session
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
-    required: true,
-  },
-  lastActivity: {
-    type: Date,
-    required: true,
-  },
-  expiresAt: {
-    type: Date,
-    required: true,
-  },
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+  accessToken: { type: String, required: true }, // Stores the JWT token
+  refreshToken: { type: String }, // Optional for refresh token strategy
+  expiresAt: { type: Date, required: true }, // Token expiration time
+  createdAt: { type: Date, default: Date.now },
 });
 
 // Optionally create TTL Index for automatic expiration
