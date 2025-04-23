@@ -182,7 +182,9 @@ export const loginUser = async (req, res) => {
     }
 
     if (!user.roleId || !user.roleId.roleName) {
-      return res.status(500).json({ message: "User role is not properly defined." });
+      return res
+        .status(500)
+        .json({ message: "User role is not properly defined." });
     }
 
     const passwordMatch = await bcrypt.compare(password, user.password);
@@ -194,7 +196,10 @@ export const loginUser = async (req, res) => {
     await Session.deleteMany({ userId: user._id }); // Remove previous sessions
 
     // Step 3: Create New Session
-    const { accessToken, refreshToken } = await createSession(user._id, user.roleId.roleName);
+    const { accessToken, refreshToken } = await createSession(
+      user._id,
+      user.roleId.roleName
+    );
 
     // Step 4: Store Token in Cookie
     res.cookie("authToken", accessToken, {
@@ -378,6 +383,12 @@ export const resetPassword = async (req, res) => {
 export const getUserProfile = async (req, res) => {
   const userId = req.userId;
 
+  if (!userId) {
+    return res
+      .status(401)
+      .json({ error: "Unauthorized access. Please log in." });
+  }
+
   try {
     const user = await User.findById(req.userId)
       .populate("roleId", "roleName") // ✅ Populate roleId with roleName from Role collection
@@ -405,7 +416,7 @@ export const getUserProfile = async (req, res) => {
 // Update User Profile
 export const updateUserProfile = async (req, res) => {
   const userId = req.body.userId;
-``
+  ``;
   try {
     const user = await User.findById(userId);
     if (!user) {

@@ -1,21 +1,20 @@
 import jwt from "jsonwebtoken";
 
 const protect = (req, res, next) => {
-  const authHeader = req.headers.authorization;
+  const token = req.cookies.authToken; // Get the token from the cookie
 
-  if (authHeader) {
-    const token = authHeader.split(" ")[1]; // Bearer <token>
+  if (!token) {
+    return res.status(401).json({ message: "Authentication token required." }); // Unauthorized
+  }
 
-    jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
-      if (err) {
-        return res.sendStatus(403); // Forbidden
-      }
-
-      req.user = user; // Add user info to request
-      next();
-    });
-  } else {
-    res.sendStatus(401); // Unauthorized
+  try {
+    // Validate token using JWT
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = decoded; // Attach decoded token data to the request
+    next(); // Proceed to the next middleware or route handler
+  } catch (err) {
+    console.error("Error validating token:", err);
+    res.status(403).json({ message: "Invalid or expired token." }); // Forbidden
   }
 };
 
