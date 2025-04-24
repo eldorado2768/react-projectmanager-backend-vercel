@@ -201,12 +201,20 @@ export const loginUser = async (req, res) => {
       user.roleId.roleName
     );
 
-    // Step 4: Store Token in Cookie
+    // Step 4: Store 1 hour accessToken in Cookie
     res.cookie("authToken", accessToken, {
       httpOnly: true, // Secure the cookie from JavaScript access
       secure: process.env.NODE_ENV === "production", // Only over HTTPS in production
       sameSite: "strict", // CSRF protection
       maxAge: 3600 * 1000, // 1-hour expiration
+    });
+
+    //Store 7 day refreshToken in Cookie
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7-day expiration
     });
 
     // Step 5: Return Response to Frontend
@@ -225,27 +233,63 @@ export const loginUser = async (req, res) => {
 //user requests a new token
 export const refreshToken = async (req, res) => {
   try {
-    const { token } = req.body;
+    // Retrieve the refreshToken from cookies
+    const token = req.cookies.refreshToken;
 
     if (!token) {
       return res.status(401).json({ message: "Refresh token required" });
     }
 
-    // Verify refresh token
-    jwt.verify(token, process.env.REFRESH_TOKEN_SECRET, (err, decoded) => {
-      if (err) {
-        return res.status(403).json({ message: "Invalid refresh token" });
+    // Verify the refresh token
+    jwt.verify(
+      token,
+      process.env.REFRESH_TOKEN_SECRET,
+      async (err, decoded) => {
+        if (err) {
+          console.error("Invalid refresh token:", err);
+          return res
+            .status(403)
+            .json({ message: "Invalid or expired refresh token" });
+        }
+
+        // Locate the session in the database
+        const session = await Session.findOne({ refreshToken: token });
+        if (!session) {
+          return res
+            .status(401)
+            .json({ message: "Session not found. Please log in again." });
+        }
+
+        // Generate a new access token
+        const newAccessToken = jwt.sign(
+          { userId: decoded.userId },
+          process.env.JWT_SECRET,
+          { expiresIn: "1h" }
+        );
+
+        // Optionally: Generate a new refresh token
+        const newRefreshToken = jwt.sign(
+          { userId: decoded.userId },
+          process.env.REFRESH_TOKEN_SECRET,
+          { expiresIn: "7d" }
+        );
+
+        // Update the session with the new refresh token
+        session.refreshToken = newRefreshToken;
+        await session.save();
+
+        // Set the new refresh token in cookies
+        res.cookie("refreshToken", newRefreshToken, {
+          httpOnly: true, // Prevent access via JavaScript
+          secure: process.env.NODE_ENV === "production", // HTTPS in production
+          sameSite: "strict", // CSRF protection
+          maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+        });
+
+        // Respond with the new access token
+        res.status(200).json({ accessToken: newAccessToken });
       }
-
-      // Generate new access token
-      const newAccessToken = jwt.sign(
-        { userId: decoded.userId },
-        process.env.JWT_SECRET,
-        { expiresIn: "1h" }
-      );
-
-      res.status(200).json({ accessToken: newAccessToken });
-    });
+    );
   } catch (error) {
     console.error("Error in refreshToken:", error);
     res.status(500).json({ message: "Internal server error" });
