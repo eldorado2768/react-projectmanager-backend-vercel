@@ -253,32 +253,39 @@ export const refreshToken = async (req, res) => {
 };
 
 //user logouts of system
-
 export const logoutUser = async (req, res) => {
   try {
-    const receivedSessionId = req.headers["x-session-id"]; // Retrieve session ID from headers
+    // Retrieve the authToken from cookies
+    const token = req.cookies.authToken;
 
-    // Validate session ID exists
-    if (!receivedSessionId) {
-      return res.status(400).json({ message: "Session Id is missing" });
+    // Validate that the token exists
+    if (!token) {
+      return res
+        .status(400)
+        .json({ message: "Authentication token is missing" });
     }
 
-    // Locate the session in the database
-    const session = await Session.findOne({
-      sessionId: receivedSessionId,
-    }).lean();
+    // Locate the session in the database using the token
+    const session = await Session.findOne({ accessToken: token }).lean();
     if (!session) {
-      return res.status(401).json({ message: "Invalid session" });
+      return res.status(401).json({ message: "Invalid session or token." });
     }
 
     // Delete the session from the database
-    await Session.deleteOne({ sessionId: receivedSessionId });
+    await Session.deleteOne({ accessToken: token });
+
+    // Clear the authToken cookie
+    res.clearCookie("authToken", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+    });
 
     // Respond to the client
-    res.status(200).json({ message: "Logout successful" });
+    return res.status(200).json({ message: "Logout successful" });
   } catch (error) {
     console.error("Error in logoutUser:", error);
-    res.status(500).json({ message: "Internal server error" });
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
 
