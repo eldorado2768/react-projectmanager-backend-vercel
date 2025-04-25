@@ -204,16 +204,16 @@ export const loginUser = async (req, res) => {
     // Step 4: Store 1 hour accessToken in Cookie
     res.cookie("authToken", accessToken, {
       httpOnly: true, // Secure the cookie from JavaScript access
-      secure: process.env.NODE_ENV === "production", // Only over HTTPS in production
-      sameSite: "strict", // CSRF protection
+      secure: true, // Only over HTTPS in production
+      sameSite: "lax", // CSRF protection
       maxAge: 3600 * 1000, // 1-hour expiration
     });
 
     //Store 7 day refreshToken in Cookie
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
+      secure: true,
+      sameSite: "lax",
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7-day expiration
     });
 
