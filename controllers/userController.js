@@ -299,7 +299,9 @@ export const refreshToken = async (req, res) => {
 //user logouts of system
 export const logoutUser = async (req, res) => {
   try {
-    // Retrieve the authToken from cookies
+    // Retrieve the authToken from cookiesee
+
+    console.log("Logout request received. Cookies:", req.cookies); // <--- Add this line
     const token = req.cookies.authToken;
 
     // Validate that the token exists
