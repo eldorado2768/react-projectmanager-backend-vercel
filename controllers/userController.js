@@ -205,7 +205,7 @@ export const loginUser = async (req, res) => {
     res.cookie("authToken", accessToken, {
       httpOnly: true, // Secure the cookie from JavaScript access
       secure: true, // Only over HTTPS in production
-      sameSite: "lax", // CSRF protection
+      sameSite: "none", // CSRF protection
       maxAge: 3600 * 1000, // 1-hour expiration
     });
 
@@ -213,7 +213,7 @@ export const loginUser = async (req, res) => {
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
       secure: true,
-      sameSite: "lax",
+      sameSite: "none",
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7-day expiration
     });
 
@@ -324,7 +324,7 @@ export const logoutUser = async (req, res) => {
     res.clearCookie("authToken", {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
+      sameSite: "lax",
     });
 
     // Respond to the client
