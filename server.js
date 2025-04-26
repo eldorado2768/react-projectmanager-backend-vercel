@@ -42,6 +42,11 @@ app.use(
 
 app.options("*", cors());
 
+app.use((req, res, next) => {
+  console.log("CORS Headers Sent:", res.getHeaders()); // Log headers before sending response
+  next();
+});
+
 // Middleware to parse JSON requests
 app.use(express.json());
 
