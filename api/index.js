@@ -7,6 +7,9 @@ const app = express();
 app.use(express.json()); // Parse JSON bodies
 app.use(express.urlencoded({ extended: true })); // Parse URL-encoded bodies
 
+//test if this file is being called
+console.log("api/indexe being called");
+
 // Mount routes
 app.use("/api/users", userRoutes);
 
