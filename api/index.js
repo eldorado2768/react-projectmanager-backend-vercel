@@ -10,4 +10,4 @@ app.use(express.urlencoded({ extended: true })); // Parse URL-encoded bodies
 // Mount routes
 app.use("/api/users", userRoutes);
 
-export default app;
+export default (req, res) => app(req, res);
