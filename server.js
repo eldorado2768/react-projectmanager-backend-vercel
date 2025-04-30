@@ -59,17 +59,7 @@ const dbtest_URL = `${process.env.BACKEND_URL}/api/db-test`;
 
 // Add this route to server.js for testing MongoDB connectivity
 app.get(dbtest_URL, async (req, res) => {
-  try {
-    // Use the built-in MongoDB ping command to test connectivity
-    await mongoose.connection.db.command({ ping: 1 });
-    console.log("MongoDB ping successful!");
-    res.status(200).json({ message: "Database connection is working!" });
-  } catch (error) {
-    console.error("Database ping failed:", error.message);
-    res
-      .status(500)
-      .json({ message: "Failed to connect to MongoDB.", error: error.message });
-  }
+  console.log("the dbtest_URL is :", dbtest_URL);
 });
 
 // Start the Server
