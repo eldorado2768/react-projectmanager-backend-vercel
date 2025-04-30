@@ -1,17 +1,25 @@
 import jwt from "jsonwebtoken";
 
 const protect = (req, res, next) => {
-  const token = req.headers.authToken;
+  const authHeader = req.headers.authorization;
 
-  console.log("Cookies received in protect middleware:", token);
+  if (authHeader) {
+    const parts = authHeader.split(" ");
+    if (parts[0] === "Bearer") {
+      req.token = parts[1];
+    }
 
-  if (!token) {
-    return res.status(401).json({ message: "Authentication token required." }); // Unauthorized
+    if (!req.token) {
+      return res
+        .status(401)
+        .json({ message: "Authentication token required." }); // Unauthorized
+    } else {
+      console.log("Token received in protect.js :", req.token);
+    }
   }
-
   try {
     // Validate token using JWT
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const decoded = jwt.verify(req.token, process.env.JWT_SECRET);
     req.user = decoded; // Attach decoded token data to the request
     next(); // Proceed to the next middleware or route handler
   } catch (err) {
