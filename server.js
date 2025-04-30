@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
 import mongoose from "mongoose";
-
+import connectDB from "./config/connectDB.js";
 import userRoutes from "./routes/userRoutes.js";
 import roleRoutes from "./routes/roleRoutes.js";
 import permissionRoutes from "./routes/permissionRoutes.js";
@@ -39,14 +39,8 @@ app.options("*", cors());
 // Middleware to parse JSON requests
 app.use(express.json());
 
-// Connect to MongoDB
-mongoose
-  .connect(process.env.MONGODB_URI)
-  .then(() => console.log("MongoDB Connected Successfully!"))
-  .catch((err) => {
-    console.error("MongoDB Connection Error:", err);
-    process.exit(1);
-  });
+// Call connectDB to initiate the database connection
+connectDB();
 
 // Use Modular Routes
 app.use("/api/users", userRoutes);
