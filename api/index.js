@@ -20,4 +20,9 @@ app.get("/api/hello", (req, res) => {
     res.status(200).send("Hello World!");
   });
 
+  app.get("/api/test-no-middleware", (req, res) => {
+    res.status(200).send("This route works without middleware!");
+  });
+  
+
 export default (req, res) => app(req, res);

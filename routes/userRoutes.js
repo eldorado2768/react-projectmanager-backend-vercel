@@ -1,29 +1,10 @@
 import express from "express";
-import * as userController from "../controllers/userController.js";
-import protect from "../middleware/protect.js";
-import checkSessionActivity from "../middleware/sessionMiddleware.js";
-
 
 const router = express.Router();
 
-const asyncHandler = (fn) => (req, res, next) => {
-  Promise.resolve(fn(req, res, next)).catch(next);
-};
-
-router.post("/activate-user", asyncHandler(userController.activateUser));
-router.post("/register-user", asyncHandler(userController.registerUser));
-router.post("/login-user", asyncHandler(userController.loginUser));
-router.post("/forgot-password", asyncHandler(userController.forgotPassword));
-router.post("/reset-password", asyncHandler(userController.resetPassword));
-router.post("/set-password", asyncHandler(userController.setPassword));
-router.post("/refresh-token", asyncHandler(userController.refreshToken));
-router.post("/logout-user", asyncHandler(userController.logoutUser));
-router.get(
-  "/profile",
-  protect,
-  checkSessionActivity,
-  asyncHandler(userController.getUserProfile)
-);
-router.put("/profile", protect, asyncHandler(userController.updateUserProfile));
+router.post("/login-user", (req, res) => {
+  console.log("Login route hit");
+  res.status(200).send("Login route works!");
+});
 
 export default router;
