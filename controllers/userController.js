@@ -180,7 +180,10 @@ export const loginUser = async (req, res) => {
 
   try {
     // Step 1: Validate User Credentials
-    const user = await User.findOne({ username }).populate("roleId").lean();
+    console.time("QueryExecutionTime");
+    const user = await User.findOne().lean();
+    console.timeEnd("QueryExecutionTime");
+
     if (!user) {
       return res.status(401).json({ message: "Invalid credentials" });
     }
