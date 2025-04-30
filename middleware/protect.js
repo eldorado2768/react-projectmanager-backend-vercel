@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 
 const protect = (req, res, next) => {
-  const token = req.cookies.authToken;
+  const token = req.headers.authToken;
 
   console.log("Cookies received in protect middleware:", token);
 
