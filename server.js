@@ -10,12 +10,6 @@ import cookieParser from "cookie-parser";
 const app = express();
 const PORT = process.env.PORT || 10000;
 
-// Validate Environment Variables
-if (!process.env.MONGODB_URI) {
-  console.error("Error: MONGODB_URI is not defined in the environment.");
-  process.exit(1); // Exit with failure
-}
-
 // Configure CORS
 const allowedOrigins = [
   "https://react-projectmanager.vercel.app",
