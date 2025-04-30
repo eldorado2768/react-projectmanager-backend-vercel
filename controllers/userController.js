@@ -165,18 +165,12 @@ const createSession = async (userId, role) => {
 
 // ✅ Main Function: Login User
 export const loginUser = async (req, res) => {
-  //const { username, password } = req.body;
-  const loginCredentials = req.body;
+  const username = req.body.username;
+  const password = req.body.password;
 
-  if (loginCredentials) {
-    const parts = loginCredentials.split(" ");
-    if (parts[0] === "username") {
-      username = parts[0];
-    }
-    if (parts[1] === "password") {
-      password = parts[1];
-    }
-  } //end splitting the loginCredentials and assigning values to username and password
+  // Further logic with username and password
+  console.log(`Username: ${username}, Password: ${password}`);
+
 
   // Role-based redirects
   const roleRedirects = {
