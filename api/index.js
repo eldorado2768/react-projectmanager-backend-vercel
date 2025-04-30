@@ -15,4 +15,9 @@ app.get("/api/test", (req, res) => {
   res.status(200).send("Test route works!");
 });
 
+app.get("/api/hello", (req, res) => {
+    console.log("Hello route hit!");
+    res.status(200).send("Hello World!");
+  });
+
 export default (req, res) => app(req, res);
