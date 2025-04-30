@@ -55,7 +55,7 @@ app.use((err, req, res, next) => {
     .json({ message: err.message || "Internal server error" });
 });
 
-const dbtest_URL = `${process.env.BACKEND_URL / api / db - test}`;
+const dbtest_URL = `${process.env.BACKEND_URL}/api/db-test`;
 
 // Add this route to server.js for testing MongoDB connectivity
 app.get(dbtest_URL, async (req, res) => {
