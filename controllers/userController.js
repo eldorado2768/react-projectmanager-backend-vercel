@@ -171,7 +171,6 @@ export const loginUser = async (req, res) => {
   // Further logic with username and password
   console.log(`Username: ${username}, Password: ${password}`);
 
-
   // Role-based redirects
   const roleRedirects = {
     superadmin: "/superadmin",
@@ -185,6 +184,7 @@ export const loginUser = async (req, res) => {
     if (!user) {
       return res.status(401).json({ message: "Invalid credentials" });
     }
+    console.log("Query succeeded, user found:", user);
 
     if (!user.roleId || !user.roleId.roleName) {
       return res
@@ -229,9 +229,12 @@ export const loginUser = async (req, res) => {
       roleName: user.roleId.roleName,
       message: "Login successful",
     });
+    console.log("Query succeeded, user found:", user);
   } catch (error) {
-    console.error("Error in loginUser:", error);
-    res.status(500).json({ message: "Internal server error" });
+    console.error("Query failed:", error.message);
+    return res
+      .status(500)
+      .json({ message: "Query failed.", error: error.message });
   }
 };
 
