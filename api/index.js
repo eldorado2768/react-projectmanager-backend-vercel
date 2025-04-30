@@ -10,4 +10,9 @@ app.use(express.urlencoded({ extended: true })); // Parse URL-encoded bodies
 // Mount routes
 app.use("/api/users", userRoutes);
 
+app.get("/test", (req, res) => {
+  console.log("Test route hit!");
+  res.status(200).send("Test route works!");
+});
+
 export default (req, res) => app(req, res);
