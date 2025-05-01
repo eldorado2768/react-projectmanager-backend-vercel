@@ -28,6 +28,10 @@ app.get("/api/test-no-middleware", (req, res) => {
 // Add this route to for testing MongoDB connectivity
 app.get("/api/db-test", async (req, res) => {
   try {
+    await mongoose.connect(
+      "mongodb+srv://vercel-admin-user:t5iwB9KHQg04UqTn@cluster0.xjaw54v.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
+    );
+    const db = mongoose.connection.db;
     // Use the built-in MongoDB ping command to test connectivity
     await mongoose.connection.db.command({ ping: 1 });
     console.log("MongoDB ping successful!");
