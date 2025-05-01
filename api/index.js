@@ -1,8 +1,7 @@
 import express from "express";
-import mongoose from "mongoose";
-import connectDB from "./config/connectDB.js";
 import userRoutes from "../routes/userRoutes.js";
-connectDB();
+
+
 const app = express();
 
 // Middleware
@@ -26,7 +25,7 @@ app.get("/api/test-no-middleware", (req, res) => {
   res.status(200).send("This route works without middleware!");
 });
 
-// Add this route to server.js for testing MongoDB connectivity
+// Add this route to for testing MongoDB connectivity
 app.get("/api/db-test", async (req, res) => {
   try {
     // Use the built-in MongoDB ping command to test connectivity
