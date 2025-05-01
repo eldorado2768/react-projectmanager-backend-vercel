@@ -6,6 +6,23 @@ import sendActivationEmail from "../utilities/sendActivationEmail.js";
 import sendResetPasswordEmail from "../utilities/sendResetPasswordEmail.js";
 import Role from "../models/Role.js";
 import crypto from "crypto";
+import mongoose from "mongoose";
+import dotenv from "dotenv";
+dotenv.config(); // Load environment variables
+
+// Connect to database
+export const connectDB = async () => {
+  if (mongoose.connection.readyState === 1) {
+    console.log("Using existing database connection");
+    return mongoose.connection;
+  }
+  console.log("Establishing new database connection...");
+  return await mongoose.connect(process.env.MONGODB_URI, {
+    serverSelectionTimeoutMS: 30000,
+    socketTimeoutMS: 45000,
+    maxPoolSize: 5,
+  });
+};
 
 /*Registers a new user*/
 export const registerUser = async (req, res) => {
@@ -165,7 +182,7 @@ const createSession = async (userId, role) => {
 
 // ✅ Main Function: Login User
 export const loginUser = async (req, res) => {
-    const { username, password } = req.body;
+  const { username, password } = req.body;
 
   // Role-based redirects
   const roleRedirects = {
@@ -175,9 +192,14 @@ export const loginUser = async (req, res) => {
   };
 
   try {
-    
+    const db = await connectDB(); // Ensure DB connection before query
+    const userCollection = db.collection("users");
     // Step 1: Validate User Credentials
-    const user = await User.findOne({ username }).populate("roleId").lean();
+
+    const user = await userCollection
+      .findOne({ username })
+      .populate("roleId")
+      .lean();
 
     if (!user) {
       return res.status(401).json({ message: "Invalid credentials" });
