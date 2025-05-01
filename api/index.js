@@ -25,7 +25,7 @@ app.get("/api/test-no-middleware", (req, res) => {
 });
 
 // Add this route to server.js for testing MongoDB connectivity
-app.get("api/db-test", async (req, res) => {
+app.get("/api/db-test", async (req, res) => {
   try {
     // Use the built-in MongoDB ping command to test connectivity
     await mongoose.connection.db.command({ ping: 1 });
