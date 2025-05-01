@@ -181,7 +181,7 @@ export const loginUser = async (req, res) => {
   try {
     // Step 1: Validate User Credentials
     console.time("QueryExecutionTime");
-    const user = await User.findOne().lean();
+    const user = await User.findOne(username).lean();
     console.timeEnd("QueryExecutionTime");
 
     if (!user) {
