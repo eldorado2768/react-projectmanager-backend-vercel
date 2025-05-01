@@ -165,10 +165,7 @@ const createSession = async (userId, role) => {
 
 // ✅ Main Function: Login User
 export const loginUser = async (req, res) => {
-  console.log("LoginUser being called");
-  const { username, password } = req.body;
-  // Further logic with username and password
-  console.log(`Username: ${username}, Password: ${password}`);
+    const { username, password } = req.body;
 
   // Role-based redirects
   const roleRedirects = {
@@ -178,10 +175,9 @@ export const loginUser = async (req, res) => {
   };
 
   try {
+    
     // Step 1: Validate User Credentials
-    console.time("QueryExecutionTime");
-    const user = await User.findOne({ username }).lean();
-    console.timeEnd("QueryExecutionTime");
+    const user = await User.findOne({ username }).populate("roleId").lean();
 
     if (!user) {
       return res.status(401).json({ message: "Invalid credentials" });
