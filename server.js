@@ -21,6 +21,8 @@ const connectDB = async () => {
 // Initialize Database Connection
 connectDB();
 
+const db = mongoose.connection;
+
 // Graceful Shutdown for Local/Non-Serverless Environments
 process.on("SIGINT", async () => {
   console.log("Gracefully shutting down...");
@@ -29,4 +31,4 @@ process.on("SIGINT", async () => {
 });
 
 // Export Database Connection for Routes to Use
-export default mongoose.connection;
+export default db;

@@ -1,9 +1,8 @@
-import db from "../../server.js"; //database connection
+import db from "../../server.js";
 import * as userController from "../../controllers/userController.js";
 import asyncHandler from "../../middleware/asyncHandler.js";
 
 export default async function handler(req, res) {
-  console.log("Incoming login request:", req.body);
   try {
     if (req.method === "POST") {
       return asyncHandler(userController.loginUser)(req, res);
