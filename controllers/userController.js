@@ -165,8 +165,8 @@ const createSession = async (userId, role) => {
 
 // ✅ Main Function: Login User
 export const loginUser = async (req, res) => {
+  console.log("LoginUser being called");
   const { username, password } = req.body;
-
   // Further logic with username and password
   console.log(`Username: ${username}, Password: ${password}`);
 
