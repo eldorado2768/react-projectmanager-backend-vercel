@@ -1,7 +1,8 @@
 import express from "express";
 import mongoose from "mongoose";
+import connectDB from "./config/connectDB.js";
 import userRoutes from "../routes/userRoutes.js";
-
+connectDB();
 const app = express();
 
 // Middleware
