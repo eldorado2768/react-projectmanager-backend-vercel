@@ -1,4 +1,3 @@
-import db from "../../server.js";
 import * as userController from "../../controllers/userController.js";
 import asyncHandler from "../../middleware/asyncHandler.js";
 
