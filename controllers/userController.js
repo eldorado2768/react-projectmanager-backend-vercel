@@ -165,8 +165,7 @@ const createSession = async (userId, role) => {
 
 // ✅ Main Function: Login User
 export const loginUser = async (req, res) => {
-  const username = req.body.username;
-  const password = req.body.password;
+  const { username, password } = req.body;
 
   // Further logic with username and password
   console.log(`Username: ${username}, Password: ${password}`);
@@ -181,7 +180,7 @@ export const loginUser = async (req, res) => {
   try {
     // Step 1: Validate User Credentials
     console.time("QueryExecutionTime");
-    const user = await User.findOne(username).lean();
+    const user = await User.findOne({ username }).lean();
     console.timeEnd("QueryExecutionTime");
 
     if (!user) {
