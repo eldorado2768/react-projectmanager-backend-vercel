@@ -168,7 +168,8 @@ const createSession = async (userId, role) => {
 
 // ✅ Main Function: Login User
 export const loginUser = async (req, res) => {
-  const { username, password } = req.body;
+  const username = req.body.username;
+  const password = req.body.password;
 
   // Connect to database
   const connectDB = async () => {
