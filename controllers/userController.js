@@ -192,12 +192,10 @@ export const loginUser = async (req, res) => {
   };
 
   try {
-    const db = await connectDB(); // Ensure DB connection before query
-    const userCollection = db.collection("users");
+    await connectDB(); // Ensure DB connection before query
+    const User = mongoose.model("User");
     // Step 1: Validate User Credentials
-
-    const user = await userCollection
-      .findOne({ username })
+    const user = await User.findOne({ username: username })
       .populate("roleId")
       .lean();
 
