@@ -10,20 +10,6 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 dotenv.config(); // Load environment variables
 
-// Connect to database
-export const connectDB = async () => {
-  if (mongoose.connection.readyState === 1) {
-    console.log("Using existing database connection");
-    return mongoose.connection;
-  }
-  console.log("Establishing new database connection...");
-  return await mongoose.connect(process.env.MONGODB_URI, {
-    serverSelectionTimeoutMS: 30000,
-    socketTimeoutMS: 45000,
-    maxPoolSize: 5,
-  });
-};
-
 /*Registers a new user*/
 export const registerUser = async (req, res) => {
   try {
@@ -184,6 +170,21 @@ const createSession = async (userId, role) => {
 export const loginUser = async (req, res) => {
   const { username, password } = req.body;
 
+  // Connect to database
+  const connectDB = async () => {
+    if (mongoose.connection.readyState === 1) {
+      console.log("Using existing database connection");
+      return mongoose.connection;
+    }
+    console.log("Establishing new database connection...");
+    return await mongoose.connect(process.env.MONGODB_URI, {
+      serverSelectionTimeoutMS: 30000,
+      socketTimeoutMS: 45000,
+      maxPoolSize: 5,
+    });
+  };
+  //connect database
+  connectDB();
   // Role-based redirects
   const roleRedirects = {
     superadmin: "/superadmin",
@@ -193,7 +194,7 @@ export const loginUser = async (req, res) => {
 
   try {
     // Step 1: Validate User Credentials
-    const user = await User.findOne({ username: "davidbrotman2768@gmail.com" })
+    const user = await User.findOne({ username: username })
       .populate("roleId")
       .lean();
 
