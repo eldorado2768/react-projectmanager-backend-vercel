@@ -10,6 +10,20 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 dotenv.config(); // Load environment variables
 
+// Connect to database
+export const connectDB = async () => {
+  if (mongoose.connection.readyState === 1) {
+    console.log("Using existing database connection");
+    return mongoose.connection;
+  }
+  console.log("Establishing new database connection...");
+  return await mongoose.connect(process.env.MONGODB_URI, {
+    serverSelectionTimeoutMS: 30000,
+    socketTimeoutMS: 45000,
+    maxPoolSize: 5,
+  });
+};
+
 /*Registers a new user*/
 export const registerUser = async (req, res) => {
   try {
@@ -171,21 +185,10 @@ export const loginUser = async (req, res) => {
   const username = req.body.username;
   const password = req.body.password;
 
-  // Connect to database
-  const connectDB = async () => {
-    if (mongoose.connection.readyState === 1) {
-      console.log("Using existing database connection");
-      return mongoose.connection;
-    }
-    console.log("Establishing new database connection...");
-    return await mongoose.connect(process.env.MONGODB_URI, {
-      serverSelectionTimeoutMS: 30000,
-      socketTimeoutMS: 45000,
-      maxPoolSize: 5,
-    });
-  };
-  //connect database
-  connectDB();
+  if (!connectDB()) {
+    return res.status(401).json({ message: "Could not connect to database" });
+  }
+
   // Role-based redirects
   const roleRedirects = {
     superadmin: "/superadmin",
