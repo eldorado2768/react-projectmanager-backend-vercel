@@ -193,7 +193,7 @@ export const loginUser = async (req, res) => {
 
   try {
     // Step 1: Validate User Credentials
-    const user = await User.findOne({ username: username })
+    const user = await User.findOne("davidbrotman2768@gmail.com")
       .populate("roleId")
       .lean();
 
