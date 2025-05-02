@@ -11,7 +11,7 @@ import dotenv from "dotenv";
 dotenv.config(); // Load environment variables
 
 // Connect to database
-const connectDB = async () => {
+export const connectDB = async () => {
   if (mongoose.connection.readyState === 1) {
     console.log("Using existing database connection");
     return mongoose.connection;
